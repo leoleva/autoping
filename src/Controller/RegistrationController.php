@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Address;
 use App\Entity\User;
 use App\Enum\UserType;
+use App\Repository\CountryRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,10 +17,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class RegistrationController extends AbstractController
 {
     private UserRepository $userRepository;
+    private CountryRepository $countryRepository;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository, CountryRepository $countryRepository)
     {
         $this->userRepository = $userRepository;
+        $this->countryRepository = $countryRepository;
     }
 
     #[Route('/register', name: 'app_register', methods: 'GET|POST')]
@@ -28,7 +31,9 @@ class RegistrationController extends AbstractController
         UserPasswordHasherInterface $userPasswordHasher,
         EntityManagerInterface $entityManager
     ): Response {
-        $responseParams = [];
+        $responseParams = [
+            'countries' => $this->countryRepository->findAll(),
+        ];
 
         $errors = $this->getFormValidationErrors($request);
 

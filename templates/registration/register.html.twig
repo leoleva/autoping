@@ -2,11 +2,45 @@
 
 {% block title %}Register{% endblock %}
 
+{% block javascript %}
+
+        <script type="text/javascript">
+            $( document ).ready(function() {
+
+                jQuery("#country").change(function () {
+                    const countryId = this.value
+
+                    if (countryId === '') {
+                        return;
+                    }
+
+                    $.get("/countries/" + countryId + "/cities", function( data ) {
+                        var $el = jQuery("#city");
+                        $el.empty();
+                        $.each(data, function(key,value) {
+                            $el.append($("<option></option>")
+                                .attr("value", key).text(value));
+                        });
+                    });
+
+                    $.get("/countries/" + countryId + "/states", function( data ) {
+                        var $el = jQuery("#state");
+                        $el.empty();
+                        $.each(data, function(key,value) {
+                            $el.append($("<option></option>")
+                                .attr("value", key).text(value));
+                        });
+                    });
+                });
+            });
+        </script>
+
+{% endblock %}
+
 {% block body %}
 
     {% include 'common/navbar.html.twig' %}
     <div class="container py-3">
-
         <h1>Registracija</h1>
 
         <main>
@@ -38,7 +72,6 @@
                                 <input type="password" class="form-control" placeholder="" value="" required name="password">
                             </div>
 
-
                             <div class="col-md-12">
                                 <label for="country" class="form-label">Vartotojo tipas</label>
                                 <select class="form-select" name="type" required>
@@ -50,17 +83,18 @@
 
                             <div class="col-md-12">
                                 <label for="country" class="form-label">Šalis</label>
-                                <select class="form-select" name="country" required>
-                                    <option value="">Pasirinkite...</option>
-                                    <option value="1">Lietuva</option>
+                                <select class="form-select" name="country" required id="country">
+                                    <option value="" selected disabled>Pasirinkite...</option>
+                                    {% for country in countries %}
+                                        <option value="{{ country.id }}">{{ country.name }}</option>
+                                    {% endfor  %}
                                 </select>
                             </div>
 
                             <div class="col-md-12">
                                 <label for="state" class="form-label">Valstija</label>
-                                <select class="form-select" name="state" required>
-                                    <option value="">Pasirinkite...</option>
-                                    <option value="1">California</option>
+                                <select class="form-select" name="state" id="state">
+                                    <option selected >Pasirinkite...</option>
                                 </select>
                                 <div class="invalid-feedback" style="display: block; color: grey">
                                     <i>Pasirinktinai</i>
@@ -69,9 +103,8 @@
 
                             <div class="col-md-12">
                                 <label for="state" class="form-label">Miestas</label>
-                                <select class="form-select" name="city" required>
-                                    <option value="">Pasirinkite...</option>
-                                    <option value="1">Vilnius</option>
+                                <select class="form-select" name="city" id="city">
+                                    <option selected>Pasirinkite...</option>
                                 </select>
                             </div>
                         </div>

@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20220324105234 extends AbstractMigration
+final class Version20220324110519 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -19,10 +19,10 @@ final class Version20220324105234 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $lvCountryId = 117;
+        $lvCountryId = 226;
 
-        foreach ($this->getCities() as $name) {
-            $this->addSql('insert into city (name, country_id) values ("'.$name.'", "'.$lvCountryId.'");');
+        foreach ($this->getStates() as $name) {
+            $this->addSql('insert into state (name, country_id) values ("'.$name.'", "'.$lvCountryId.'");');
         }
     }
 
@@ -34,9 +34,10 @@ final class Version20220324105234 extends AbstractMigration
     private function getStates(): array
     {
         return [
-            'Saldus',
-            'Ryga',
-            'Broceni',
+            'California',
+            'Arizona',
+            'Texas',
+            'Aliaska'
         ];
     }
 }

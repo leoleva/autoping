@@ -7,11 +7,17 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class IndexController extends AbstractController
+class CountryController extends AbstractController
 {
-    #[Route(path: '', name: 'get_countries')]
+    #[Route(path: '/countries', name: 'get_countries')]
     public function getCountries(CountryRepository $countryRepository): Response
     {
-        return $this->json($countryRepository->findAll());
+        $json = [];
+
+        foreach ($countryRepository->findAll() as $country) {
+            $json[$country->getId()] = $country->getName();
+        }
+
+        return $this->json($json);
     }
 }
