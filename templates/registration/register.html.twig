@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+
+    {% include 'common/navbar.html.twig' %}
+    <div class="container py-3">
+
+        <h1>Registracija</h1>
+
+        <main>
+            <div class="row row-cols-1 row-cols-md-3 mb-3 ">
+                <div class="col-md-12 col-lg-12">
+                    {% if registration_successful is defined %}
+                        <div class="alert alert-success">
+                            Registracija sėkminga
+                        </div>
+                    {% endif %}
+
+                    {% if registration_errors is defined %}
+                        <div class="alert alert-danger">
+                            {% for message in registration_errors %}
+                                <div class="mb-1">{{ message }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <form class="needs-validation" novalidate method="POST">
+                        <div class="row g-3">
+                            <div class="col-sm-12">
+                                <label for="firstName" class="form-label">El.paštas</label>
+                                <input type="text" class="form-control" placeholder="" value="" required name="email">
+                            </div>
+
+                            <div class="col-sm-12">
+                                <label for="firstName" class="form-label">Slaptažodis</label>
+                                <input type="password" class="form-control" placeholder="" value="" required name="password">
+                            </div>
+
+
+                            <div class="col-md-12">
+                                <label for="country" class="form-label">Vartotojo tipas</label>
+                                <select class="form-select" name="type" required>
+                                    <option value="">Pasirinkite...</option>
+                                    <option value="buyer">Automobilio pirkėjas</option>
+                                    <option value="specialist">Automobilių apžiūros specialistas</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label for="country" class="form-label">Šalis</label>
+                                <select class="form-select" name="country" required>
+                                    <option value="">Pasirinkite...</option>
+                                    <option value="1">Lietuva</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label for="state" class="form-label">Valstija</label>
+                                <select class="form-select" name="state" required>
+                                    <option value="">Pasirinkite...</option>
+                                    <option value="1">California</option>
+                                </select>
+                                <div class="invalid-feedback" style="display: block; color: grey">
+                                    <i>Pasirinktinai</i>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label for="state" class="form-label">Miestas</label>
+                                <select class="form-select" name="city" required>
+                                    <option value="">Pasirinkite...</option>
+                                    <option value="1">Vilnius</option>
+                                </select>
+                            </div>
+                        </div>
+                        <hr class="my-4">
+                        <button class="w-100 btn btn-primary btn-lg" type="submit">Registruotis</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+{% block body %}
+
+    {% include 'common/navbar.html.twig' %}
+    <div class="container py-3">
+
+        <h1>Prisijungimas</h1>
+
+        <main>
+            <div class="row row-cols-md-12">
+                <div class="col-md-12 col-lg-12">
+                    {% if error is not null %}
+                        <div class="alert alert-danger">
+                            {{ error.message }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <form class="needs-validation" novalidate method="POST">
+                    <div class="col-sm-12">
+                        <label for="firstName" class="form-label">El.paštas</label>
+                        <input type="text" class="form-control" placeholder="" value="" required name="email">
+                    </div>
+
+                    <div class="col-sm-12">
+                        <label for="firstName" class="form-label">Slaptažodis</label>
+                        <input type="password" class="form-control" placeholder="" value="" required name="password">
+                    </div>
+
+                    <input type="hidden" name="_csrf_token"
+                           value="{{ csrf_token('authenticate') }}"
+                    >
+
+
+                    <hr class="my-4">
+                    <button class="w-100 btn btn-primary btn-lg" type="submit">Prisijungti</button>
+                </form>
+            </div>
+        </main>
+    </div>
+{% endblock %}

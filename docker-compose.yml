@@ -4,6 +4,7 @@ services:
     image: bitnami/php-fpm:latest
     volumes:
       - .:/app:cached
+      - ./docker/php/config.ini:/opt/bitnami/php/etc/php.ini:cached
     working_dir: /app
     container_name: autoping_php
 
