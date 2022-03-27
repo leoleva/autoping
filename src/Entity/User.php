@@ -34,8 +34,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?DateTime $deletedAt = null;
 
-    #[ORM\Column(type: 'integer')]
-    private ?int $addressId;
+    #[ORM\Column(type: 'integer', nullable: false)]
+    private int $addressId;
 
     #[ORM\Column(type: 'string', enumType: UserType::class)]
     private $userType;
@@ -183,24 +183,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getAddressId(): ?int
+    public function getAddressId(): int
     {
         return $this->addressId;
     }
 
-    /**
-     * @param int|null $addressId
-     * @return User
-     */
-    public function setAddressId(?int $addressId): User
+    public function setAddressId(int $addressId): User
     {
         $this->addressId = $addressId;
         return $this;
     }
-
-
-
 }

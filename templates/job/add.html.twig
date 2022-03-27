@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Mano profilis{% endblock %}
-
+{% block title %}Register{% endblock %}
 
 {% block javascript %}
 
@@ -42,21 +41,14 @@
 
     {% include 'common/navbar.html.twig' %}
     <div class="container py-3">
-
-        <h1>Profilio redagavimas</h1>
+        <h1>Registracija</h1>
 
         <main>
             <div class="row row-cols-1 row-cols-md-3 mb-3 ">
                 <div class="col-md-12 col-lg-12">
-                    {% if login_successful is defined %}
-                        <div class="alert alert-success">
-                            Duomenys atnaujinti sėkmingai
-                        </div>
-                    {% endif %}
-
-                    {% if login_errors is defined %}
+                    {% if job_add_errors is defined %}
                         <div class="alert alert-danger">
-                            {% for message in login_errors %}
+                            {% for message in job_add_errors %}
                                 <div class="mb-1">{{ message }}</div>
                             {% endfor %}
                         </div>
@@ -65,49 +57,51 @@
                     <form class="needs-validation" novalidate method="POST">
                         <div class="row g-3">
                             <div class="col-sm-12">
-                                <label for="firstName" class="form-label">El.paštas</label>
-                                <input type="text" class="form-control" placeholder="" value="{{ app.user.email }}" required name="email">
+                                <label for="firstName" class="form-label">Pavadinimas</label>
+                                <input type="text" class="form-control" placeholder="" value="" required name="title">
                             </div>
 
                             <div class="col-sm-12">
-                                <label for="firstName" class="form-label">Slaptažodis</label>
-                                <input type="password" class="form-control" placeholder="" value="" required name="password">
+                                <label for="exampleTextarea" class="form-label mt-4">Aprašymas</label>
+                                <textarea class="form-control" id="exampleTextarea" rows="3" required name="text"></textarea>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <label for="firstName" class="form-label">Atlikti iki</label>
+                                <input type="date" class="form-control" placeholder="" value="" required name="due_to">
+                            </div>
+
+                            <div class="col-sm-12">
+                                <label for="firstName" class="form-label">Kaina</label>
+                                <input type="number" class="form-control" placeholder="" value="" required name="price">
                             </div>
 
                             <div class="col-md-12">
                                 <label for="country" class="form-label">Šalis</label>
-                                <select class="form-select" name="country" required id="country">
-                                    <option value="" disabled>Pasirinkite...</option>
+                                <select class="form-select" name="country_id" required id="country">
+                                    <option value="" selected disabled>Pasirinkite...</option>
                                     {% for country in countries %}
-                                        <option value="{{ country.id }}" {% if user_country == country.id %}selected{% endif %}>{{ country.name }}</option>
+                                        <option value="{{ country.id }}">{{ country.name }}</option>
                                     {% endfor  %}
                                 </select>
                             </div>
 
                             <div class="col-md-12">
                                 <label for="state" class="form-label">Valstija</label>
-                                <select class="form-select" name="state" required id="state">
-                                    <option value="" disabled>Pasirinkite...</option>
-                                    {% for state in user_country_states %}
-                                        <option value="{{ state.id }}" {% if user_state == state.id %}selected{% endif %}>{{ state.name }}</option>
-                                    {% endfor  %}
+                                <select class="form-select" name="state_id" id="state">
+                                    <option selected >Pasirinkite...</option>
                                 </select>
-                                <div class="invalid-feedback" style="display: block; color: grey">
-                                    <i>Pasirinktinai</i>
-                                </div>
                             </div>
 
                             <div class="col-md-12">
                                 <label for="state" class="form-label">Miestas</label>
-                                <select class="form-select" name="city" id="city">
-                                    {% for city in user_country_cities %}
-                                        <option value="{{ city.id }}" {% if user_city == city.id %}selected{% endif %}>{{ city.name }}</option>
-                                    {% endfor  %}
+                                <select class="form-select" name="city_id" id="city">
+                                    <option selected>Pasirinkite...</option>
                                 </select>
                             </div>
                         </div>
                         <hr class="my-4">
-                        <button class="w-100 btn btn-primary btn-lg" type="submit">Registruotis</button>
+                        <button class="w-100 btn btn-primary btn-lg" type="submit">Įdėti skelbimą</button>
                     </form>
                 </div>
             </div>

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Address;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -43,6 +44,17 @@ class AddressRepository extends ServiceEntityRepository
         if ($flush) {
             $this->_em->flush();
         }
+    }
+
+    public function getAddressById(int $id): Address
+    {
+        $address = $this->find($id);
+
+        if ($address === null) {
+            throw new \GeneralException('Addresas nerastas');
+        }
+
+        return $address;
     }
 
     // /**
