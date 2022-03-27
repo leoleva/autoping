@@ -45,6 +45,17 @@ class JobRepository extends ServiceEntityRepository
         }
     }
 
+    public function getById(int $id): Job
+    {
+        $job = $this->find($id);
+
+        if ($job === null) {
+            throw new \GeneralException('Skelbimas nerastas');
+        }
+
+        return $job;
+    }
+
     // /**
     //  * @return Job[] Returns an array of Job objects
     //  */

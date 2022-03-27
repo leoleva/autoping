@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block css %}
+<style>
+    .no-text-decoration{
+        text-decoration: none;
+    }
+    .no-text-decoration:hover {
+        color: rgba(255, 255, 255, 0.42);
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+
+    {% include 'common/navbar.html.twig' %}
+    <div class="container py-3">
+        <h1>Mano skelbimai</h1>
+
+        <main>
+            <div class="row row-cols-1 row-cols-md-3 mb-3 ">
+                <div class="col-md-12 col-lg-12">
+                    {% if app.session.flashbag.peek('job_deleted') is not empty %}
+                        <div class="alert alert-success">
+                            {% for message in app.flashes('job_deleted') %}
+                                <div class="mb-1">{{ message }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Pavadinimas</th>
+                                <th scope="col">Atlikti iki</th>
+                                <th scope="col">Sukurtas</th>
+                                <th scope="col">Kaina</th>
+                                <th scope="col">Statusas</th>
+                                <th scope="col">Veiskmai</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        {% for job in jobs %}
+                        <tr>
+                            <th>{{ job.id }}</th>
+                            <td>{{ job.title }}</td>
+                            <td>{{ job.dueTo.format('Y-m-d') }}</td>
+                            <td>{{ job.createdAt.format('Y-m-d') }}</td>
+                            <td>{{ job.amount }} {{ job.currency }}</td>
+                            <td>{{ job.getLithuanianStatusNaming }}</td>
+                            <td>
+                                <a class="badge bg-primary no-text-decoration" href="{{ url('author_job_offer_list', {id: job.id}) }}">Peržiūrėti pasiūlymus</a>
+                                <a class="badge bg-info no-text-decoration" href="{{ url('edit_job_view', {id: job.id}) }}">Redaguoti</a>
+                                <a class="badge bg-danger no-text-decoration" href="{{ url('delete_job_by_id', {id: job.id}) }}">Trinti</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+{% endblock %}

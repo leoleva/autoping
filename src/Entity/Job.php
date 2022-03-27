@@ -39,18 +39,18 @@ class Job
     #[ORM\Column(type: 'string', length: 255)]
     private string $currency;
 
-    #[ORM\Column(type: 'string', length: 255, enumType: JobStatus::class)]
+    #[ORM\Column(type: 'string', enumType: JobStatus::class)]
     private JobStatus $status;
 
     #[ORM\Column(type: 'integer')]
     private int $address_id;
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getUserId(): ?int
+    public function getUserId(): int
     {
         return $this->user_id;
     }
@@ -74,7 +74,7 @@ class Job
         return $this;
     }
 
-    public function getText(): ?string
+    public function getText(): string
     {
         return $this->text;
     }
@@ -86,7 +86,7 @@ class Job
         return $this;
     }
 
-    public function getDueTo(): ?\DateTimeInterface
+    public function getDueTo(): \DateTimeInterface
     {
         return $this->dueTo;
     }
@@ -98,7 +98,7 @@ class Job
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): \DateTimeInterface
     {
         return $this->created_at;
     }
@@ -110,7 +110,7 @@ class Job
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): \DateTimeInterface
     {
         return $this->updated_at;
     }
@@ -123,36 +123,36 @@ class Job
     }
 
     /**
-     * @return Money
+     * @return string
      */
-    public function getAmount(): Money
+    public function getAmount(): string
     {
         return $this->amount;
     }
 
     /**
-     * @param Money $amount
+     * @param string $amount
      * @return Job
      */
-    public function setAmount(Money $amount): Job
+    public function setAmount(string $amount): Job
     {
         $this->amount = $amount;
         return $this;
     }
 
     /**
-     * @return Money
+     * @return string
      */
-    public function getCurrency(): Money
+    public function getCurrency(): string
     {
         return $this->currency;
     }
 
     /**
-     * @param Money $currency
+     * @param string $currency
      * @return Job
      */
-    public function setCurrency(Money $currency): Job
+    public function setCurrency(string $currency): Job
     {
         $this->currency = $currency;
         return $this;
@@ -171,7 +171,25 @@ class Job
         return $this;
     }
 
-    public function getAddressId(): ?int
+    public function getLithuanianStatusNaming(): string
+    {
+        switch ($this->status) {
+            case JobStatus::New:
+                return 'Laukiama specialisto';
+            case JobStatus::Pending:
+                return 'Laukiam pasiūlymo patvirtinimo';
+            case JobStatus::Active:
+                return 'Laukiam duomenų';
+            case JobStatus::Done:
+                return 'Atliktas';
+            case JobStatus::Closed:
+                return 'Uždarytas';
+            default:
+                return 'Nežinomas';
+        }
+    }
+
+    public function getAddressId(): int
     {
         return $this->address_id;
     }
