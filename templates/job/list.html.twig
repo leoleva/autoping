@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block javascript %}
+
+<script type="text/javascript">
+    $( document ).ready(function() {
+
+    jQuery("#country").change(function () {
+        const countryId = this.value
+
+        if (countryId === '') {
+            return;
+        }
+
+        $.get("/countries/" + countryId + "/cities", function( data ) {
+            var $el = jQuery("#city");
+            $el.empty();
+            $.each(data, function(key,value) {
+                $el.append($("<option></option>")
+                    .attr("value", key).text(value));
+            });
+        });
+
+        $.get("/countries/" + countryId + "/states", function( data ) {
+            var $el = jQuery("#state");
+            $el.empty();
+            $.each(data, function(key,value) {
+                $el.append($("<option></option>")
+                    .attr("value", key).text(value));
+            });
+        });
+    });
+});
+</script>
+
+{% endblock %}
+
+{% block body %}
+
+    {% include 'common/navbar.html.twig' %}
+    <div class="container py-3">
+        <h1>Skelbimo lenta</h1>
+
+        <main>
+            <div class="row">
+                <div class="col-md-12 col-lg-12">
+                    {% for job in jobs %}
+                    <div class="card border-primary mb-12">
+                        <div class="card-header">{{ job.title }}</div>
+                        <div class="card-body">
+                            <h4 class="card-title">{{ job.text }}</h4>
+                            <p class="card-text">
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <b><i class="bi bi-clock-history"></i> Sukurtas:</b> {{ job.createdAt.format('Y-m-d') }}
+                                            </div>
+                                            <div class="col-md-4">
+                                                <b><i class="bi bi-calendar-day"></i> Atlikti iki:</b> {{ job.dueTo.format('Y-m-d') }}
+                                            </div>
+                                            <div class="col-md-4">
+                                                <b><i class="bi bi-currency-dollar"></i> Užmokestis:</b> {{ job.amount }} {{ job.currency }}
+                                            </div>
+                                        </div>
+                                        <div class="row pt-2">
+                                            <div class="col-md-4">
+                                                <b><i class="bi bi-flag"></i> Šalis:</b> {{ job.address.country.name }}
+                                            </div>
+                                            <div class="col-md-4">
+                                                <b><i class="bi bi-hospital"></i> Valstija:</b> {{ job.address.state.name | default('-') }}
+                                            </div>
+                                            <div class="col-md-4">
+                                                <b><i class="bi bi-house-door"></i> Miestas:</b> {{ job.address.city.name | default('-') }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-12  d-flex justify-content-center">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <a href="{{ url('accept_job', {id: job.id}) }}" type="button" class="btn btn-success">Sutikti su darbu</a>
+                                                <a  href="{{ url('send_offer', {id: job.id}) }}" type="button" class="btn btn-info">Siųsti pasiūlymą</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </main>
+    </div>
+{% endblock %}

@@ -19,6 +19,13 @@ class State
     #[ORM\Column(type: 'integer')]
     private $country_id;
 
+    public function setId($id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

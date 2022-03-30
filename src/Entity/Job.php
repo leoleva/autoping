@@ -6,6 +6,7 @@ use App\Enum\JobStatus;
 use App\Repository\JobRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Evp\Component\Money\Money;
+use App\Entity\Address;
 
 #[ORM\Entity(repositoryClass: JobRepository::class)]
 class Job
@@ -44,6 +45,10 @@ class Job
 
     #[ORM\Column(type: 'integer')]
     private int $address_id;
+
+    #[ORM\OneToOne(targetEntity: Address::class)]
+    #[ORM\JoinColumn(name: 'address_id', referencedColumnName: 'id')]
+    private Address $address;
 
     public function getId(): int
     {
@@ -198,6 +203,17 @@ class Job
     {
         $this->address_id = $address_id;
 
+        return $this;
+    }
+
+    public function getAddress(): \App\Entity\Address
+    {
+        return $this->address;
+    }
+
+    public function setAddress(\App\Entity\Address $address): Job
+    {
+        $this->address = $address;
         return $this;
     }
 }

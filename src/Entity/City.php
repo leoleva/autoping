@@ -22,6 +22,13 @@ class City
     #[ORM\Column(type: 'integer', nullable: true)]
     private $state_id;
 
+    public function setId($id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

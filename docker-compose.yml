@@ -28,6 +28,13 @@ services:
       MYSQL_DB_NAME: ${MYSQL_DB_NAME}
     container_name: autoping_mysql
 
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - 1025:1025 # smtp server
+      - 8025:8025 # web ui
+    container_name: autoping_mailhog
+
 networks:
   default:
     external:

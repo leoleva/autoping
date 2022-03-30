@@ -44,6 +44,7 @@ class Job
         $job->setCurrency($money->getCurrency());
         $job->setStatus($jobStatus);
         $job->setAddressId($address->getId());
+        $job->setAddress($address);
         $job->setCreatedAt(new \DateTime());
         $job->setUpdatedAt(new \DateTime());
 

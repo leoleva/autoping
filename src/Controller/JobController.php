@@ -5,19 +5,26 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Address;
+use App\Entity\Country;
+use App\Entity\JobOffer;
+use App\Enum\JobOfferStatus;
 use App\Enum\JobStatus;
 use App\Repository\AddressRepository;
 use App\Repository\CityRepository;
 use App\Repository\CountryRepository;
 use App\Repository\JobRepository;
 use App\Repository\StateRepository;
+use App\Services\AddressHandler;
 use App\Services\Job;
 use App\Validator\JobAddValidator;
 use App\Validator\JobUpdateValidator;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Evp\Component\Money\Money;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class JobController extends AbstractController
 {
@@ -30,6 +37,9 @@ class JobController extends AbstractController
         private CityRepository $cityRepository,
         private AddressRepository $addressRepository,
         private JobUpdateValidator $jobUpdateValidator,
+        private EntityManagerInterface $entityManager,
+        private AddressHandler $addressHandler,
+        private \App\Services\JobOffer $jobOffer
     ) {}
 
     #[Route(path: '/job/add', name: 'index')]
@@ -47,10 +57,9 @@ class JobController extends AbstractController
             $errors = $this->jobAddValidator->getValidationErrors($request);
 
             if (count($errors) === 0) {
-                $address = (new Address())
-                    ->setCountryId((int)$request->request->getInt('country_id'))
-                    ->setCityId($request->request->get('city_id') !== null ? $request->request->getInt('city_id') : null)
-                    ->setStateId($request->request->get('state_id') !== null ? $request->request->getInt('state_id') : null);
+                $address = $this->addressHandler->resolveAddressFromRequest(
+                    $request
+                );
 
                 $this->job->createNewJob(
                     $this->getUser(),
@@ -176,5 +185,42 @@ class JobController extends AbstractController
         }
 
         return $this->redirectToRoute('edit_job_view', ['id'  => $id]);
+    }
+
+    #[Route(path: '/job/list', name: 'job_list')]
+    public function jobList(Request $request): Response
+    {
+        $jobs = $this->jobRepository->findAll();
+
+        return $this->render('job/list.html.twig', [
+            'jobs' => $jobs,
+        ]);
+    }
+
+    #[Route(path: '/job/{id}/accept', name: 'accept_job')]
+    public function acceptJob(int $id, Request $request): Response
+    {
+        if ($this->getUser() === null) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $job = $this->jobRepository->getById($id);
+
+        $this->jobOffer->createJobOffer(
+            $id,
+            $this->getUser(),
+            '',
+            new \DateTime(),
+            new Money($job->getAmount(), $job->getCurrency()),
+            JobOfferStatus::New,
+        );
+
+        return $this->redirect(''); //todo: redirect to offer list
+    }
+
+    #[Route(path: '/job/{id}/send-offer', name: 'send_offer')]
+    public function sendOffer(int $id, Request $request): Response
+    {
+
     }
 }
