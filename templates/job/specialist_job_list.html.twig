@@ -17,22 +17,22 @@
 
     {% include 'common/navbar.html.twig' %}
     <div class="container py-3">
-        <h1>Išsiųsto darbo pasiūlymai</h1>
+        <h1>Mano skelbimai</h1>
 
         <main>
             <div class="row row-cols-1 row-cols-md-3 mb-3 ">
                 <div class="col-md-12 col-lg-12">
-                    {% if app.session.flashbag.peek('offer_removed') is not empty %}
+                    {% if app.session.flashbag.peek('job_deleted') is not empty %}
                         <div class="alert alert-success">
-                            {% for message in app.flashes('offer_removed') %}
+                            {% for message in app.flashes('job_deleted') %}
                                 <div class="mb-1">{{ message }}</div>
                             {% endfor %}
                         </div>
                     {% endif %}
 
-                    {% if app.session.flashbag.peek('offer_created') is not empty %}
+                    {% if app.session.flashbag.peek('offer_accepted') is not empty %}
                         <div class="alert alert-success">
-                            {% for message in app.flashes('offer_created') %}
+                            {% for message in app.flashes('offer_accepted') %}
                                 <div class="mb-1">{{ message }}</div>
                             {% endfor %}
                         </div>
@@ -42,8 +42,8 @@
                         <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Darbas</th>
-                            <th scope="col">Mano žinutė</th>
+                            <th scope="col">Pavadinimas</th>
+                            <th scope="col">Atlikti iki</th>
                             <th scope="col">Sukurtas</th>
                             <th scope="col">Kaina</th>
                             <th scope="col">Statusas</th>
@@ -52,25 +52,18 @@
                         </thead>
                         <tbody>
 
-                        {% for offer in offers %}
+                        {% for job in jobs %}
                             <tr>
-                                <th>{{ offer.id }}</th>
-                                <td>{{ offer.job.title }}</td>
-                                <th>
-                                    {% if offer.text != '' %}
-                                        {{ offer.job.title }}
-                                    {% else %}
-                                        -
-                                    {%  endif %}
-                                </th>
-                                <td>{{ offer.createdAt.format('Y-m-d') }}</td>
-                                <td>{{ offer.amount }} {{ offer.currency }}</td>
-                                <td>{{ offer.getLithuanianStatusNamingForOffer }}</td>
+                                <th>{{ job.id }}</th>
+                                <td>{{ job.title }}</td>
+                                <td>{{ job.dueTo.format('Y-m-d') }}</td>
+                                <td>{{ job.createdAt.format('Y-m-d') }}</td>
+                                <td>{{ job.amount }} {{ job.currency }}</td>
+                                <td>{{ job.getLithuanianStatusNaming }}</td>
                                 <td>
-                                    {% if offer.status == 'accepted' %}
-                                    <a class="badge bg-info no-text-decoration" href="{{ url('edit_job_view', {id: offer.id}) }}">Įkelti informaciją</a>
-                                    {% endif %}
-                                    <a class="badge bg-danger no-text-decoration" href="{{ url('specialist_delete_offer', {id: offer.id}) }}">Pašalinti pasiūlymą</a>
+                                    <a class="badge bg-primary no-text-decoration" href="{{ url('author_job_offer_list', {id: job.id}) }}">Peržiūrėti pasiūlymus</a>
+                                    <a class="badge bg-info no-text-decoration" href="{{ url('edit_job_view', {id: job.id}) }}">Redaguoti</a>
+                                    <a class="badge bg-danger no-text-decoration" href="{{ url('delete_job_by_id', {id: job.id}) }}">Trinti</a>
                                 </td>
                             </tr>
                         {% endfor %}

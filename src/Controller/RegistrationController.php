@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Enum\UserType;
 use App\Repository\CountryRepository;
 use App\Repository\UserRepository;
+use App\Services\AddressHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,13 +17,11 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class RegistrationController extends AbstractController
 {
-    private UserRepository $userRepository;
-    private CountryRepository $countryRepository;
-
-    public function __construct(UserRepository $userRepository, CountryRepository $countryRepository)
-    {
-        $this->userRepository = $userRepository;
-        $this->countryRepository = $countryRepository;
+    public function __construct(
+        private UserRepository $userRepository,
+        private CountryRepository $countryRepository,
+        private AddressHandler $addressHandler
+    ) {
     }
 
     #[Route('/register', name: 'app_register', methods: 'GET|POST')]
@@ -39,15 +38,7 @@ class RegistrationController extends AbstractController
 
         if ($request->getMethod() === 'POST') {
             if (count($errors) === 0) {
-                $address = new Address();
-
-                if ($request->request->getInt('city') !== 0) {
-                    $address->setCityId($request->request->get('city'));
-                }
-                if ($request->request->getInt('state') !== 0) {
-                    $address->setStateId($request->request->get('state'));
-                }
-                $address->setCountryId($request->request->get('country'));
+                $address = $this->addressHandler->resolveAddressFromRequest($request);
 
                 $entityManager->persist($address);
                 $entityManager->flush();
@@ -86,9 +77,9 @@ class RegistrationController extends AbstractController
 
         $email = $request->request->get('email');
         $password = $request->request->get('password');
-        $country = $request->request->getInt('country');
-        $state = $request->request->getInt('state');
-        $city = $request->request->getInt('city');
+        $country = $request->request->getInt('country_id');
+        $state = $request->request->getInt('state_id');
+        $city = $request->request->getInt('city_id');
         $type = $request->request->get('type');
 
 

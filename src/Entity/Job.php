@@ -191,7 +191,7 @@ class Job
             case JobStatus::New:
                 return 'Laukiama specialisto';
             case JobStatus::Pending:
-                return 'Laukiam pasiūlymo patvirtinimo';
+                return 'Laukiama pasiūlymo patvirtinimo';
             case JobStatus::Active:
                 return 'Laukiam duomenų';
             case JobStatus::Done:

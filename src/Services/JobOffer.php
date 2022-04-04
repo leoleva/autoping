@@ -41,6 +41,7 @@ class JobOffer
         $jobOffer->setStatus($status);
         $jobOffer->setJobId($jobId);
         $jobOffer->setJob($this->entityManager->getReference(\App\Entity\Job::class, $jobId));
+        $jobOffer->setUser($this->entityManager->getReference(\App\Entity\User::class, $user->getId()));
 
         $this->entityManager->persist($jobOffer);
         $this->entityManager->flush($jobOffer);

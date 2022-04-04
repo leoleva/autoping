@@ -13,6 +13,7 @@ use App\Enum\JobStatus;
 use App\Repository\AddressRepository;
 use App\Repository\CityRepository;
 use App\Repository\CountryRepository;
+use App\Repository\JobOfferRepository;
 use App\Repository\JobRepository;
 use App\Repository\StateRepository;
 use App\Services\AddressHandler;
@@ -40,10 +41,11 @@ class JobController extends AbstractController
         private JobUpdateValidator $jobUpdateValidator,
         private EntityManagerInterface $entityManager,
         private AddressHandler $addressHandler,
-        private \App\Services\JobOffer $jobOffer
+        private \App\Services\JobOffer $jobOffer,
+        private JobOfferRepository $jobOfferRepository
     ) {}
 
-    #[Route(path: '/job/add', name: 'index')]
+    #[Route(path: '/job/add', name: 'create_job')]
     public function index(Request $request): Response
     {
         if ($this->getUser() === null) {
@@ -111,8 +113,8 @@ class JobController extends AbstractController
         return $this->redirectToRoute('author_job_list');
     }
 
-    #[Route(path: '/job/my/{id}/offers', name: 'author_job_offer_list')]
-    public function getAuthorJobOfferList(Request $request): Response
+    #[Route(path: '/job/{id}/offers', name: 'author_job_offer_list')]
+    public function getAuthorJobOfferList(int $id, Request $request): Response
     {
         // todo: implement
 
@@ -120,8 +122,11 @@ class JobController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        return $this->render('job/author_job_list.html.twig', [
-            'jobs' => $this->jobRepository->findBy(['user_id' => $this->getUser()->getId()])
+        $job = $this->jobRepository->getById($id);
+
+        return $this->render('job/job_offer_list.html.twig', [
+            'job' => $job,
+            'offers' => $this->jobOfferRepository->findBy(['job_id' => $id])
         ]);
     }
 
@@ -214,25 +219,17 @@ class JobController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/job/{id}/accept', name: 'accept_job')]
-    public function acceptJob(int $id, Request $request): Response
+    #[Route(path: '/job/specialist/list', name: 'specialist_job_list')]
+    public function specialistJobList(): Response
     {
         if ($this->getUser() === null) {
             return $this->redirectToRoute('app_login');
         }
 
-        $job = $this->jobRepository->getById($id);
+        $jobs = $this->jobRepository->getSpecialistJobs($this->getUser()->getId());
 
-        $this->jobOffer->createJobOffer(
-            $id,
-            $this->getUser(),
-            '',
-            new \DateTime(),
-            new Money($job->getAmount(), $job->getCurrency()),
-            JobOfferStatus::New,
-        );
-
-        return $this->redirectToRoute('specialist_offers'); //todo: redirect to offer list
+        return $this->render('job/specialist_job_list.html.twig', [
+            'jobs' => $jobs,
+        ]);
     }
-
 }

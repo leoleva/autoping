@@ -7,7 +7,7 @@ namespace App\Enum;
 enum JobStatus: string
 {
     case New = 'new';
-    case Pending = 'pending';
+    case Pending = 'pending'; // todo: reikia implementin status change kai susikuria offeris
     case Active = 'active';
     case Done = 'done';
     case Closed = 'closed';

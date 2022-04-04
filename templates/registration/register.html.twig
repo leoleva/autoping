@@ -83,7 +83,7 @@
 
                             <div class="col-md-12">
                                 <label for="country" class="form-label">Šalis</label>
-                                <select class="form-select" name="country" required id="country">
+                                <select class="form-select" name="country_id" required id="country">
                                     <option value="" selected disabled>Pasirinkite...</option>
                                     {% for country in countries %}
                                         <option value="{{ country.id }}">{{ country.name }}</option>
@@ -93,7 +93,7 @@
 
                             <div class="col-md-12">
                                 <label for="state" class="form-label">Valstija</label>
-                                <select class="form-select" name="state" id="state">
+                                <select class="form-select" name="state_id" id="state">
                                     <option selected >Pasirinkite...</option>
                                 </select>
                                 <div class="invalid-feedback" style="display: block; color: grey">
@@ -103,7 +103,7 @@
 
                             <div class="col-md-12">
                                 <label for="state" class="form-label">Miestas</label>
-                                <select class="form-select" name="city" id="city">
+                                <select class="form-select" name="city_id" id="city">
                                     <option selected>Pasirinkite...</option>
                                 </select>
                             </div>

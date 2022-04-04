@@ -19,13 +19,13 @@ final class Version20220324105232 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $ltCountryId = 117;
+        $ltCountryId = 123;
 
         foreach ($this->getCities() as $name) {
             $this->addSql('insert into city (name, country_id) values ("'.$name.'", "'.$ltCountryId.'");');
         }
 
-        $ltCountryId = 117;
+        $ltCountryId = 123;
 
         foreach ($this->getCities() as $name) {
             $this->addSql('insert into city (name, country_id) values ("'.$name.'", "'.$ltCountryId.'");');

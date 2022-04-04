@@ -1,0 +1,96 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block css %}
+    <style>
+        .no-text-decoration{
+            text-decoration: none;
+        }
+        .no-text-decoration:hover {
+            color: rgba(255, 255, 255, 0.42);
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+
+    {% include 'common/navbar.html.twig' %}
+    <div class="container py-3">
+        <h1>Apžiūros pasiūlymai</h1>
+
+        <main>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="card border-primary mb-12 mb-3">
+                            <div class="card-header">Mano skelbimo santrauka</div>
+                            <div class="card-body">
+                                <div class="pb-2">
+                                    <b><i class="bi bi-clock-history"></i> Sukurtas:</b> {{ job.createdAt.format('Y-m-d') }}
+                                </div>
+                                <div class="pb-2">
+                                    <b><i class="bi bi-calendar-day"></i> Atlikti iki:</b> {{ job.dueTo.format('Y-m-d') }}
+                                </div>
+                                <div class="pb-2">
+                                    <b><i class="bi bi-currency-dollar"></i> Užmokestis:</b> {{ job.amount }} {{ job.currency }}
+                                </div>
+                                <div class="pb-2">
+                                    <b><i class="bi bi-flag"></i> Šalis:</b> {{ job.address.country.name }}
+                                </div>
+                                <div class="pb-2">
+                                    <b><i class="bi bi-hospital"></i> Valstija:</b> {{ job.address.state.name | default('-') }}
+                                </div>
+                                <div class="pb-2">
+                                    <b><i class="bi bi-house-door"></i> Miestas:</b> {{ job.address.city.name | default('-') }}
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-9 col-lg-9">
+                        {% if app.session.flashbag.peek('specialist_offer_removed') is not empty %}
+                            <div class="alert alert-success">
+                                {% for message in app.flashes('specialist_offer_removed') %}
+                                    <div class="mb-1">{{ message }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Žinutė</th>
+                                <th scope="col">Sukurtas</th>
+                                <th scope="col">Kaina</th>
+                                <th scope="col">Statusas</th>
+                                <th scope="col">Veiskmai</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {% for offer in offers %}
+                                <tr>
+                                    <th>{{ offer.id }}</th>
+                                    <td>{{ offer.text }}</td>
+                                    <td>{{ offer.createdAt.format('Y-m-d') }}</td>
+                                    <td>{{ offer.amount }} {{ offer.currency }}</td>
+                                    <td>{{ offer.getLithuanianStatusNamingForOffer }}</td>
+                                    <td>
+                                        {% if offer.canBeEditedByBuyer %}
+                                            <a class="badge bg-primary no-text-decoration" href="{{ url('accept_job_offer', {id: offer.id}) }}">Priimti</a>
+                                            <a class="badge bg-danger no-text-decoration" href="{{ url('decline_job_offer', {id: offer.id}) }}">Atmesti</a>
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+{% endblock %}

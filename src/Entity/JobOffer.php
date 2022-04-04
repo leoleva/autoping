@@ -40,6 +40,9 @@ class JobOffer
     #[ORM\ManyToOne(targetEntity: Job::class, cascade: ['persist'], inversedBy: 'jobOffer')]
     private Job $job;
 
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    private User $user;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -141,7 +144,7 @@ class JobOffer
         return $this;
     }
 
-    public function getLithuanianStatusNaming(): string
+    public function getLithuanianStatusNamingForOffer(): string
     {
         switch ($this->status) {
             case JobOfferStatus::New:
@@ -161,4 +164,26 @@ class JobOffer
         }
     }
 
+    /**
+     * @return User
+     */
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param User $user
+     * @return JobOffer
+     */
+    public function setUser(User $user): JobOffer
+    {
+        $this->user = $user;
+        return $this;
+    }
+
+    public function canBeEditedByBuyer(): bool
+    {
+        return in_array($this->getStatus(), [JobOfferStatus::New], true);
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\DTO\SearchFilter;
 use App\Entity\Job;
+use App\Enum\JobOfferStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -79,6 +80,24 @@ class JobRepository extends ServiceEntityRepository
         }
 
         return $query->getQuery()->getResult();
+    }
+
+    /**
+     * @param int $userId
+     * @return Job[]
+     */
+    public function getSpecialistJobs(int $userId): array
+    {
+        $q = $this->createQueryBuilder('j')
+            ->join('j.jobOffer', 'jo');
+
+        return $q->
+            where($q->expr()->andX(
+                $q->expr()->eq('jo.status', ':status'),
+                $q->expr()->eq('jo.user_id', $userId),
+        ))
+            ->setParameter('status', JobOfferStatus::Accepted->value)
+            ->getQuery()->getResult();
     }
 
     // /**

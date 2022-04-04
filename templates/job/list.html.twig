@@ -47,104 +47,102 @@
 
         <main>
             <div class="container">
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="card border-primary mb-12 mb-3">
-                        <div class="card-header">Filtrai</div>
-                        <div class="card-body">
-                            <form method="get">
-                                <div class="col-md-12 mb-3">
-                                    <label for="country" class="form-label">Šalis</label>
-                                    <select class="form-select" name="country_id" id="country">
-                                        <option value="">Pasirinkite...</option>
-                                        {% for country in countries %}
-                                            <option value="{{ country.id }}" {% if user_country == country.id %}selected{% endif %}>{{ country.name }}</option>
-                                        {% endfor  %}
-                                    </select>
-                                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="card border-primary mb-12 mb-3">
+                            <div class="card-header">Filtrai</div>
+                            <div class="card-body">
+                                <form method="get">
+                                    <div class="col-md-12 mb-3">
+                                        <label for="country" class="form-label">Šalis</label>
+                                        <select class="form-select" name="country_id" id="country">
+                                            <option value="">Pasirinkite...</option>
+                                            {% for country in countries %}
+                                                <option value="{{ country.id }}" {% if user_country == country.id %}selected{% endif %}>{{ country.name }}</option>
+                                            {% endfor  %}
+                                        </select>
+                                    </div>
 
-                                <div class="col-md-12 mb-3">
-                                    <label for="state" class="form-label">Valstija</label>
-                                    <select class="form-select" name="state_id" id="state">
-                                        <option value="">Pasirinkite...</option>
-                                        {% for state in country_states %}
-                                            <option value="{{ state.id }}" {% if user_state == state.id %}selected{% endif %}>{{ state.name }}</option>
-                                        {% endfor  %}
-                                    </select>
-                                </div>
+                                    <div class="col-md-12 mb-3">
+                                        <label for="state" class="form-label">Valstija</label>
+                                        <select class="form-select" name="state_id" id="state">
+                                            <option value="">Pasirinkite...</option>
+                                            {% for state in country_states %}
+                                                <option value="{{ state.id }}" {% if user_state == state.id %}selected{% endif %}>{{ state.name }}</option>
+                                            {% endfor  %}
+                                        </select>
+                                    </div>
 
-                                <div class="col-md-12 mb-3">
-                                    <label for="state" class="form-label">Miestas</label>
-                                    <select class="form-select" name="city_id" id="city">
-                                        <option value="">Pasirinkite...</option>
-                                        {% for city in country_cities %}
-                                            <option value="{{ city.id }}" {% if user_city == city.id %}selected{% endif %}>{{ city.name }}</option>
-                                        {% endfor  %}
-                                    </select>
-                                </div>
+                                    <div class="col-md-12 mb-3">
+                                        <label for="state" class="form-label">Miestas</label>
+                                        <select class="form-select" name="city_id" id="city">
+                                            <option value="">Pasirinkite...</option>
+                                            {% for city in country_cities %}
+                                                <option value="{{ city.id }}" {% if user_city == city.id %}selected{% endif %}>{{ city.name }}</option>
+                                            {% endfor  %}
+                                        </select>
+                                    </div>
 
-                                <button class="w-100 btn btn-primary " type="submit">Filtruoti</button>
-                            </form>
+                                    <button class="w-100 btn btn-primary " type="submit">Filtruoti</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-9 col-lg-9">
-                    {% if jobs|length == 0 %}
-                        <div class="alert alert-warning">
-                            <div class="mb-1">Skelbimų nerasta</div>
-                        </div>
-                    {% endif %}
+                    <div class="col-md-9 col-lg-9">
+                        {% if jobs|length == 0 %}
+                            <div class="alert alert-warning">
+                                <div class="mb-1">Skelbimų nerasta</div>
+                            </div>
+                        {% endif %}
 
-                    {% for job in jobs %}
-                    <div class="card border-primary mb-9 mb-3">
-                        <div class="card-header">{{ job.title }}</div>
-                        <div class="card-body">
-                            <h4 class="card-title">{{ job.text }}</h4>
-                            <p class="card-text">
-                                <hr>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <b><i class="bi bi-clock-history"></i> Sukurtas:</b> {{ job.createdAt.format('Y-m-d') }}
+                        {% for job in jobs %}
+                            <div class="card border-primary mb-9 mb-3">
+                                <div class="card-header">{{ job.title }}</div>
+                                <div class="card-body">
+                                    <h4 class="card-title">{{ job.text }}</h4>
+                                    <p class="card-text">
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <b><i class="bi bi-clock-history"></i> Sukurtas:</b> {{ job.createdAt.format('Y-m-d') }}
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <b><i class="bi bi-calendar-day"></i> Atlikti iki:</b> {{ job.dueTo.format('Y-m-d') }}
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <b><i class="bi bi-currency-dollar"></i> Užmokestis:</b> {{ job.amount }} {{ job.currency }}
+                                                </div>
                                             </div>
-                                            <div class="col-md-4">
-                                                <b><i class="bi bi-calendar-day"></i> Atlikti iki:</b> {{ job.dueTo.format('Y-m-d') }}
-                                            </div>
-                                            <div class="col-md-4">
-                                                <b><i class="bi bi-currency-dollar"></i> Užmokestis:</b> {{ job.amount }} {{ job.currency }}
+                                            <div class="row pt-2">
+                                                <div class="col-md-4">
+                                                    <b><i class="bi bi-flag"></i> Šalis:</b> {{ job.address.country.name }}
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <b><i class="bi bi-hospital"></i> Valstija:</b> {{ job.address.state.name | default('-') }}
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <b><i class="bi bi-house-door"></i> Miestas:</b> {{ job.address.city.name | default('-') }}
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="row pt-2">
-                                            <div class="col-md-4">
-                                                <b><i class="bi bi-flag"></i> Šalis:</b> {{ job.address.country.name }}
-                                            </div>
-                                            <div class="col-md-4">
-                                                <b><i class="bi bi-hospital"></i> Valstija:</b> {{ job.address.state.name | default('-') }}
-                                            </div>
-                                            <div class="col-md-4">
-                                                <b><i class="bi bi-house-door"></i> Miestas:</b> {{ job.address.city.name | default('-') }}
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-md-12  d-flex justify-content-center">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <a href="{{ url('create_default_job_offer', {id: job.id}) }}" type="button" class="btn btn-success">Sutikti su darbu</a>
+                                                    <a  href="{{ url('send_offer_view', {id: job.id}) }}" type="button" class="btn btn-info">Siųsti pasiūlymą</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <hr>
-                                <div class="row">
-                                    <div class="col-md-12  d-flex justify-content-center">
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <a href="{{ url('accept_job', {id: job.id}) }}" type="button" class="btn btn-success">Sutikti su darbu</a>
-                                                <a  href="{{ url('send_offer', {id: job.id}) }}" type="button" class="btn btn-info">Siųsti pasiūlymą</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </p>
-                        </div>
+                            </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
-                </div>
-            </div>
                 </div>
             </div>
         </main>

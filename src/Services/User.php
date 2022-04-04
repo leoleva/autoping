@@ -33,7 +33,7 @@ class User
             $errors[] = 'Vartotojas jau egzistuoja';
         }
 
-        if (strlen($password) < 3) {
+        if (strlen($password) !== 0 && ($password) < 3) {
             $errors[] = 'Slaptažodis per trumpas';
         }
 
@@ -51,12 +51,15 @@ class User
             );
 
             $user->setEmail($email);
-            $user->setPassword(
-                $this->userPasswordHasher->hashPassword(
-                    $user,
-                    $password
-                )
-            );
+
+            if (strlen($password) !== 0) {
+                $user->setPassword(
+                    $this->userPasswordHasher->hashPassword(
+                        $user,
+                        $password
+                    )
+                );
+            }
 
             $this->entityManager->persist($user);
             $this->entityManager->persist($userAddress);
