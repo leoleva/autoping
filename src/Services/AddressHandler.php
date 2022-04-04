@@ -28,14 +28,17 @@ class AddressHandler
         $cityId = filter_var($request->request->get('city_id'), FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
 
         if ($countryId !== null) {
+            $address->setCountryId($countryId);
             $address->setCountry($this->entityManager->getReference(Country::class, $countryId));
         }
 
         if ($stateId !== null) {
+            $address->setStateId($stateId);
             $address->setState($this->entityManager->getReference(State::class, $stateId));
         }
 
         if ($cityId !== null) {
+            $address->setCityId($cityId);
             $address->setCity($this->entityManager->getReference(City::class, $cityId));
         }
 

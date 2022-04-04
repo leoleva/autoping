@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block css %}
+    <style>
+        .no-text-decoration{
+            text-decoration: none;
+        }
+        .no-text-decoration:hover {
+            color: rgba(255, 255, 255, 0.42);
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+
+    {% include 'common/navbar.html.twig' %}
+    <div class="container py-3">
+        <h1>Išsiųsto darbo pasiūlymai</h1>
+
+        <main>
+            <div class="row row-cols-1 row-cols-md-3 mb-3 ">
+                <div class="col-md-12 col-lg-12">
+                    {% if app.session.flashbag.peek('offer_removed') is not empty %}
+                        <div class="alert alert-success">
+                            {% for message in app.flashes('offer_removed') %}
+                                <div class="mb-1">{{ message }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Darbas</th>
+                            <th scope="col">Mano žinutė</th>
+                            <th scope="col">Sukurtas</th>
+                            <th scope="col">Kaina</th>
+                            <th scope="col">Statusas</th>
+                            <th scope="col">Veiskmai</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {% for offer in offers %}
+                            <tr>
+                                <th>{{ offer.id }}</th>
+                                <td>{{ offer.job.title }}</td>
+                                <th>
+                                    {% if offer.text != '' %}
+                                        {{ offer.job.title }}
+                                    {% else %}
+                                        -
+                                    {%  endif %}
+                                </th>
+                                <td>{{ offer.createdAt.format('Y-m-d') }}</td>
+                                <td>{{ offer.amount }} {{ offer.currency }}</td>
+                                <td>{{ offer.getLithuanianStatusNaming }}</td>
+                                <td>
+                                    {% if offer.status == 'accepted' %}
+                                    <a class="badge bg-info no-text-decoration" href="{{ url('edit_job_view', {id: offer.id}) }}">Įkelti informaciją</a>
+                                    {% endif %}
+                                    <a class="badge bg-danger no-text-decoration" href="{{ url('specialist_delete_offer', {id: offer.id}) }}">Pašalinti pasiūlymą</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+{% endblock %}

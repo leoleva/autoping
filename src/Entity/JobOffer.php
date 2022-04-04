@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Enum\JobOfferStatus;
+use App\Enum\JobStatus;
 use App\Repository\JobOfferRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -33,8 +34,11 @@ class JobOffer
     #[ORM\Column(type: 'string', length: 255, enumType: JobOfferStatus::class)]
     private JobOfferStatus $status;
 
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: 'integer', unique: false)]
     private int $job_id;
+
+    #[ORM\ManyToOne(targetEntity: Job::class, cascade: ['persist'], inversedBy: 'jobOffer')]
+    private Job $job;
 
     public function getId(): ?int
     {
@@ -124,4 +128,37 @@ class JobOffer
 
         return $this;
     }
+
+    public function getJob(): Job
+    {
+        return $this->job;
+    }
+
+    public function setJob(Job $job): JobOffer
+    {
+        $this->job = $job;
+
+        return $this;
+    }
+
+    public function getLithuanianStatusNaming(): string
+    {
+        switch ($this->status) {
+            case JobOfferStatus::New:
+                return 'Laukiama patvirtinimo';
+
+            case JobOfferStatus::Accepted:
+                return 'Priimtas';
+
+            case JobOfferStatus::Declined:
+                return 'Atmestas';
+
+            case JobOfferStatus::Closed:
+                return 'Uždarytas';
+
+            default:
+                return 'Nežinomas';
+        }
+    }
+
 }

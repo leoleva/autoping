@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Entity\JobOffer as JobOfferEntity;
+use App\Entity\State;
 use App\Entity\User as UserEntity;
 use App\Enum\JobOfferStatus;
 use App\Repository\JobRepository;
@@ -39,6 +40,7 @@ class JobOffer
         $jobOffer->setCurrency($price->getCurrency());
         $jobOffer->setStatus($status);
         $jobOffer->setJobId($jobId);
+        $jobOffer->setJob($this->entityManager->getReference(\App\Entity\Job::class, $jobId));
 
         $this->entityManager->persist($jobOffer);
         $this->entityManager->flush($jobOffer);

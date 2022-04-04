@@ -4,9 +4,9 @@ namespace App\Entity;
 
 use App\Enum\JobStatus;
 use App\Repository\JobRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Evp\Component\Money\Money;
-use App\Entity\Address;
 
 #[ORM\Entity(repositoryClass: JobRepository::class)]
 class Job
@@ -49,6 +49,15 @@ class Job
     #[ORM\OneToOne(targetEntity: Address::class)]
     #[ORM\JoinColumn(name: 'address_id', referencedColumnName: 'id')]
     private Address $address;
+
+    #[ORM\OneToMany(mappedBy: 'job', targetEntity: JobOffer::class)]
+    #[ORM\JoinColumn(name: 'id', referencedColumnName: 'job_id', unique: false)]
+    private Collection $jobOffer;
+
+    public function __construct()
+    {
+        $this->jobOffer = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     public function getId(): int
     {
@@ -214,6 +223,21 @@ class Job
     public function setAddress(\App\Entity\Address $address): Job
     {
         $this->address = $address;
+        return $this;
+    }
+
+    /**
+     * @return JobOffer[]
+     */
+    public function getJobOffer(): Collection
+    {
+        return $this->jobOffer;
+    }
+
+    public function setJobOffer(Collection $jobOffer): Job
+    {
+        $this->jobOffer = $jobOffer;
+
         return $this;
     }
 }

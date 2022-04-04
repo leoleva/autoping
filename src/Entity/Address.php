@@ -19,18 +19,18 @@ class Address
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $stateId;
 
-    #[ORM\Column(name: 'country_id', type: 'integer')]
+    #[ORM\Column(name: 'country_id', type: 'integer', unique: false)]
     private int $countryId;
 
-    #[ORM\OneToOne(targetEntity: Country::class, cascade: ['persist'])]
+    #[ORM\ManyToOne(targetEntity: Country::class)]
     #[ORM\JoinColumn(name: 'country_id', referencedColumnName: 'id')]
     private Country $country;
 
-    #[ORM\OneToOne(targetEntity: City::class)]
+    #[ORM\ManyToOne(targetEntity: City::class)]
     #[ORM\JoinColumn(name: 'city_id', referencedColumnName: 'id', nullable: true)]
     private ?City $city;
 
-    #[ORM\OneToOne(targetEntity: State::class)]
+    #[ORM\ManyToOne(targetEntity: State::class)]
     #[ORM\JoinColumn(name: 'state_id', referencedColumnName: 'id', nullable: true)]
     private ?State $state;
 

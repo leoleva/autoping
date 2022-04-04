@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\DTO\SearchFilter;
 use App\Entity\Address;
 use App\Entity\Country;
 use App\Entity\JobOffer;
@@ -190,10 +191,26 @@ class JobController extends AbstractController
     #[Route(path: '/job/list', name: 'job_list')]
     public function jobList(Request $request): Response
     {
-        $jobs = $this->jobRepository->findAll();
+        $searchFilter = SearchFilter::createFromRequest($request);
+
+        $countryStates = [];
+        $countryCities = [];
+
+        if ($searchFilter->getCountryId() !== null) {
+            $countryStates = $this->stateRepository->findBy(['country_id' => $searchFilter->getCountryId()]);
+            $countryCities = $this->cityRepository->findBy(['country_id' => $searchFilter->getCountryId()]);
+        }
+
+        $jobs = $this->jobRepository->getAllWithAddress($searchFilter);
 
         return $this->render('job/list.html.twig', [
             'jobs' => $jobs,
+            'countries' => $this->countryRepository->findAll(),
+            'user_country' => $searchFilter->getCountryId(),
+            'user_state' => $searchFilter->getStateId(),
+            'user_city' => $searchFilter->getCityId(),
+            'country_states' => $countryStates,
+            'country_cities' => $countryCities,
         ]);
     }
 
@@ -215,12 +232,7 @@ class JobController extends AbstractController
             JobOfferStatus::New,
         );
 
-        return $this->redirect(''); //todo: redirect to offer list
+        return $this->redirectToRoute('specialist_offers'); //todo: redirect to offer list
     }
 
-    #[Route(path: '/job/{id}/send-offer', name: 'send_offer')]
-    public function sendOffer(int $id, Request $request): Response
-    {
-
-    }
 }

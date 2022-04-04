@@ -54,7 +54,6 @@
                         </div>
                     {% endif %}
 
-
                     {% if app.session.flashbag.peek('job_update_errors') is not empty %}
                         <div class="alert alert-danger">
                             {% for messages in app.flashes('job_update_errors') %}

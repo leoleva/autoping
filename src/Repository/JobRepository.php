@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\DTO\SearchFilter;
 use App\Entity\Job;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
@@ -54,6 +55,30 @@ class JobRepository extends ServiceEntityRepository
         }
 
         return $job;
+    }
+
+    public function getAllWithAddress(SearchFilter $searchFilter): array
+    {
+        $query = $this->createQueryBuilder('j')
+            ->join('j.address', 'a');
+
+        $expressions = [];
+
+        if ($searchFilter->getCountryId() !== null) {
+            $expressions[] = $query->expr()->eq('a.countryId', $searchFilter->getCountryId());
+        }
+        if ($searchFilter->getCityId() !== null) {
+            $expressions[] = $query->expr()->eq('a.cityId', $searchFilter->getCityId());
+        }
+        if ($searchFilter->getStateId() !== null) {
+            $expressions[] = $query->expr()->eq('a.stateId', $searchFilter->getStateId());
+        }
+
+        if (count($expressions) !== 0) {
+            $query = $query->where($query->expr()->andX(...$expressions));
+        }
+
+        return $query->getQuery()->getResult();
     }
 
     // /**

@@ -45,6 +45,17 @@ class JobOfferRepository extends ServiceEntityRepository
         }
     }
 
+    public function getById(int $id)
+    {
+        $result = $this->find($id);
+
+        if ($result === null) {
+            throw new \GeneralException('Pasiūlymas nerastas');
+        }
+
+        return $result;
+    }
+
     // /**
     //  * @return JobOffer[] Returns an array of JobOffer objects
     //  */
