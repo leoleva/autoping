@@ -31,7 +31,7 @@
     {% block javascripts %}
         {{ encore_entry_script_tags('app') }}
     {% endblock %}
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
+    <script src="{{ asset('js/jquery.js') }}" ></script>
     <script src="/js/bootstrap.min.js"></script>
     {% block javascript %}{% endblock %}
 </html>

@@ -17,7 +17,7 @@
 
     {% include 'common/navbar.html.twig' %}
     <div class="container py-3">
-        <h1>Mano skelbimai</h1>
+        <h1>Mano darbai</h1>
 
         <main>
             <div class="row row-cols-1 row-cols-md-3 mb-3 ">
@@ -61,13 +61,12 @@
                                 <td>{{ job.amount }} {{ job.currency }}</td>
                                 <td>{{ job.getLithuanianStatusNaming }}</td>
                                 <td>
-                                    <a class="badge bg-primary no-text-decoration" href="{{ url('author_job_offer_list', {id: job.id}) }}">Peržiūrėti pasiūlymus</a>
-                                    <a class="badge bg-info no-text-decoration" href="{{ url('edit_job_view', {id: job.id}) }}">Redaguoti</a>
-                                    <a class="badge bg-danger no-text-decoration" href="{{ url('delete_job_by_id', {id: job.id}) }}">Trinti</a>
+                                    <a class="badge bg-info no-text-decoration" href="{{ url('add_job_photos', {id: job.id}) }}">Įkelti duomenis</a>
+                                    <a class="badge bg-success no-text-decoration" href="{{ url('edit_job_view', {id: job.id}) }}">Pateikti peržiūrai</a>
+                                    <a class="badge bg-danger no-text-decoration" href="{{ url('delete_job_by_id', {id: job.id}) }}">Atsisakyti</a>
                                 </td>
                             </tr>
                         {% endfor %}
-
                         </tbody>
                     </table>
                 </div>

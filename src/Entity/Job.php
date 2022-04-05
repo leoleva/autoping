@@ -54,9 +54,13 @@ class Job
     #[ORM\JoinColumn(name: 'id', referencedColumnName: 'job_id', unique: false)]
     private Collection $jobOffer;
 
+    #[ORM\OneToMany(mappedBy: 'job', targetEntity: JobPhoto::class)]
+    private $jobPhotos;
+
     public function __construct()
     {
         $this->jobOffer = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->jobPhotos = new ArrayCollection();
     }
 
     public function getId(): int
@@ -237,6 +241,36 @@ class Job
     public function setJobOffer(Collection $jobOffer): Job
     {
         $this->jobOffer = $jobOffer;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, JobPhoto>
+     */
+    public function getJobPhotos(): Collection
+    {
+        return $this->jobPhotos;
+    }
+
+    public function addJobPhoto(JobPhoto $jobPhoto): self
+    {
+        if (!$this->jobPhotos->contains($jobPhoto)) {
+            $this->jobPhotos[] = $jobPhoto;
+            $jobPhoto->setJob($this);
+        }
+
+        return $this;
+    }
+
+    public function removeJobPhoto(JobPhoto $jobPhoto): self
+    {
+        if ($this->jobPhotos->removeElement($jobPhoto)) {
+            // set the owning side to null (unless already changed)
+            if ($jobPhoto->getJob() === $this) {
+                $jobPhoto->setJob(null);
+            }
+        }
 
         return $this;
     }
