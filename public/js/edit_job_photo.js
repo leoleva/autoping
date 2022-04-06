@@ -27,12 +27,18 @@ $(function () {
     $(document).on('change', "input[type='file']", function (){
         handleImageSelection(this);
     });
-    $(document).on('click', ".remove-photo", function (){
+    $(document).on('click', ".remove-job-photo", function (){
         let formGroup = $(this).parent().parent();
 
-        formGroup.find('.select-image').removeClass('d-none');
-        formGroup.find('.image-selected').addClass('d-none');
-        formGroup.find("input[type='file']").val('');
+        let photoId = formGroup.find("input[type='hidden']").val();
+
+        let request = $.ajax({
+            url: "/job-photo/"+ photoId +"/delete",
+            method: "POST",
+            success: function () {
+                formGroup.remove();
+            }
+        });
     });
     $(document).on('click', ".add-next-column", function () {
        let row = $(this).parent().parent().parent().parent();

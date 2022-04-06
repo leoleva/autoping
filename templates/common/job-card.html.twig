@@ -1,0 +1,26 @@
+<div class="card border-primary mb-12 mb-3">
+    <div class="card-header">Skelbimas</div>
+    <div class="card-body">
+        <div class="pb-2">
+            <b><i class="bi bi-card-text"></i> Pavadinimas:</b> {{ job.text }}
+        </div>
+        <div class="pb-2">
+            <b><i class="bi bi-clock-history"></i> Sukurtas:</b> {{ job.createdAt.format('Y-m-d') }}
+        </div>
+        <div class="pb-2">
+            <b><i class="bi bi-calendar-day"></i> Atlikti iki:</b> {{ job.dueTo.format('Y-m-d') }}
+        </div>
+        <div class="pb-2">
+            <b><i class="bi bi-currency-dollar"></i> Užmokestis:</b> {{ job.amount }} {{ job.currency }}
+        </div>
+        <div class="pb-2">
+            <b><i class="bi bi-flag"></i> Šalis:</b> {{ job.address.country.name }}
+        </div>
+        <div class="pb-2">
+            <b><i class="bi bi-hospital"></i> Valstija:</b> {{ job.address.state.name | default('-') }}
+        </div>
+        <div class="pb-2">
+            <b><i class="bi bi-house-door"></i> Miestas:</b> {{ job.address.city.name | default('-') }}
+        </div>
+    </div>
+</div>

@@ -45,6 +45,27 @@ class JobPhotoRepository extends ServiceEntityRepository
         }
     }
 
+    public function getByUuid(string $uuid): JobPhoto
+    {
+        $job = $this->findOneBy(['uuid' => $uuid]);
+
+        if ($job === null) {
+            throw new \GeneralException('JobPhoto nerasta');
+        }
+
+        return $job;
+    }
+    public function getById(int $id): JobPhoto
+    {
+        $job = $this->find($id);
+
+        if ($job === null) {
+            throw new \GeneralException('JobPhoto nerasta');
+        }
+
+        return $job;
+    }
+
     // /**
     //  * @return JobPhoto[] Returns an array of JobPhoto objects
     //  */

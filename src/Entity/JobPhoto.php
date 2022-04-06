@@ -11,36 +11,39 @@ class JobPhoto
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private int $id;
 
     #[ORM\ManyToOne(targetEntity: Job::class, inversedBy: 'jobPhotos')]
     #[ORM\JoinColumn(nullable: false)]
-    private $job;
+    private Job $job;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $photo;
+    private string $photo;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private $comment;
+    #[ORM\Column(type: 'text')]
+    private string $comment;
+
+    #[ORM\Column(type: 'text', nullable: false, unique: true)]
+    private string $uuid;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getJob(): ?Job
+    public function getJob(): Job
     {
         return $this->job;
     }
 
-    public function setJob(?Job $job): self
+    public function setJob(Job $job): self
     {
         $this->job = $job;
 
         return $this;
     }
 
-    public function getPhoto(): ?string
+    public function getPhoto(): string
     {
         return $this->photo;
     }
@@ -52,7 +55,7 @@ class JobPhoto
         return $this;
     }
 
-    public function getComment(): ?string
+    public function getComment(): string
     {
         return $this->comment;
     }
@@ -60,6 +63,18 @@ class JobPhoto
     public function setComment(string $comment): self
     {
         $this->comment = $comment;
+
+        return $this;
+    }
+
+    public function getUuid(): string
+    {
+        return $this->uuid;
+    }
+
+    public function setUuid(string $uuid): JobPhoto
+    {
+        $this->uuid = $uuid;
 
         return $this;
     }

@@ -61,7 +61,7 @@
                                 <td>{{ job.amount }} {{ job.currency }}</td>
                                 <td>{{ job.getLithuanianStatusNaming }}</td>
                                 <td>
-                                    <a class="badge bg-info no-text-decoration" href="{{ url('add_job_photos', {id: job.id}) }}">Įkelti duomenis</a>
+                                    <a class="badge bg-info no-text-decoration" href="{{ url('add_job_photos_view', {id: job.id}) }}">Įkelti duomenis</a>
                                     <a class="badge bg-success no-text-decoration" href="{{ url('edit_job_view', {id: job.id}) }}">Pateikti peržiūrai</a>
                                     <a class="badge bg-danger no-text-decoration" href="{{ url('delete_job_by_id', {id: job.id}) }}">Atsisakyti</a>
                                 </td>

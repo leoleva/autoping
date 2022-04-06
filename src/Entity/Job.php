@@ -246,7 +246,7 @@ class Job
     }
 
     /**
-     * @return Collection<int, JobPhoto>
+     * @return JobPhoto[]|Collection<int, JobPhoto>
      */
     public function getJobPhotos(): Collection
     {
