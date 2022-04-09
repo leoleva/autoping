@@ -22,5 +22,6 @@
         <div class="pb-2">
             <b><i class="bi bi-house-door"></i> Miestas:</b> {{ job.address.city.name | default('-') }}
         </div>
+        {% block additional_job_card_bottom %}{% endblock %}
     </div>
 </div>

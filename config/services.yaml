@@ -26,3 +26,7 @@ services:
     App\Services\FileUploader:
         arguments:
             $targetDirectory: '%kernel.project_dir%/public/upload/'
+
+    App\Twig\JobExtension:
+        tags:
+            - twig.runtime

@@ -165,6 +165,8 @@ class JobOfferController extends AbstractController
 
         $offer->setStatus(JobOfferStatus::Accepted);
         $job->setStatus(JobStatus::Active);
+        $job->setAmount($offer->getAmount());
+        $job->setCurrency($offer->getCurrency());
 
         $this->entityManager->persist($offer);
         $this->entityManager->persist($job);

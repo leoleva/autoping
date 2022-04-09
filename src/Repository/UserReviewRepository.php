@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Job;
 use App\Entity\UserReview;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
@@ -44,6 +45,19 @@ class UserReviewRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
+
+
+    public function getById(int $id): UserReview
+    {
+        $job = $this->find($id);
+
+        if ($job === null) {
+            throw new \GeneralException('Atsiliepimas nerastas');
+        }
+
+        return $job;
+    }
+
 
     // /**
     //  * @return UserReview[] Returns an array of UserReview objects

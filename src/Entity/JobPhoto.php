@@ -23,9 +23,6 @@ class JobPhoto
     #[ORM\Column(type: 'text')]
     private string $comment;
 
-    #[ORM\Column(type: 'text', nullable: false, unique: true)]
-    private string $uuid;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -63,18 +60,6 @@ class JobPhoto
     public function setComment(string $comment): self
     {
         $this->comment = $comment;
-
-        return $this;
-    }
-
-    public function getUuid(): string
-    {
-        return $this->uuid;
-    }
-
-    public function setUuid(string $uuid): JobPhoto
-    {
-        $this->uuid = $uuid;
 
         return $this;
     }

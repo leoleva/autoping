@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\JobOffer;
 use App\Entity\JobPhoto;
 use App\Enum\JobOfferStatus;
+use App\Enum\JobStatus;
 use App\Repository\JobPhotoRepository;
 use App\Repository\JobRepository;
 use App\Services\FileUploader;
@@ -80,13 +81,11 @@ class JobPhotoController extends AbstractController
             $fileName = $this->fileUploader->upload($file);
 
             $text = $request->request->get('text')[$key] ?? '';
-            $uuid = $request->request->get('uuid')[$key] ?? null;
 
             $jobPhoto = new JobPhoto();
             $jobPhoto->setComment($text);
             $jobPhoto->setPhoto($fileName);
             $jobPhoto->setJob($job);
-            $jobPhoto->setUuid(bin2hex(random_bytes(50)));
 
             $this->entityManager->persist($jobPhoto);
         }
@@ -122,6 +121,56 @@ class JobPhotoController extends AbstractController
         ]);
     }
 
+    #[Route(path: '/job/{id}/job-photo/edit/handle', name: 'edit_job_photos_handle')]
+    public function editJobPhotosHandle(int $id, Request $request): Response
+    {
+        if ($this->getUser() === null) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $job = $this->jobRepository->getById($id);
+
+        /** @var JobOffer|false $acceptedOffer */
+        $acceptedOffer = $job->getJobOffer()->filter(fn(JobOffer $jobOffer) => $jobOffer->getStatus() === JobOfferStatus::Accepted)->first();
+
+        if (!$acceptedOffer instanceof JobOffer) {
+            return $this->redirectToRoute('specialist_job_list');
+        }
+
+        if ($acceptedOffer->getUserId() !== $this->getUser()->getId()) {
+            return $this->redirectToRoute('specialist_job_list');
+        }
+
+        foreach ($request->request->all('existing_text') as $uuid => $text) {
+            $jobPhoto = $this->jobPhotoRepository->getById($uuid);
+            $jobPhoto->setComment($text);
+
+            $this->entityManager->persist($jobPhoto);
+        }
+
+        /** @var UploadedFile[] $files */
+        $files = $request->files->all('file');
+
+        foreach ($files as $key => $file) {
+            $fileName = $this->fileUploader->upload($file);
+
+            $text = $request->request->get('text')[$key] ?? '';
+
+            $jobPhoto = new JobPhoto();
+            $jobPhoto->setComment($text);
+            $jobPhoto->setPhoto($fileName);
+            $jobPhoto->setJob($job);
+
+            $this->entityManager->persist($jobPhoto);
+        }
+
+        $this->entityManager->flush();
+
+        $this->addFlash('success_job_photo_edit', 'Sėkmingai atnaujinta informacija');
+
+        return $this->redirectToRoute('edit_job_photos_view', ['id' => $id]);
+    }
+
     #[Route(path: '/job-photo/{id}/delete', name: 'delete_job_photo', methods: 'POST')]
     public function deleteJobPhoto(int $id): Response
     {
@@ -147,5 +196,74 @@ class JobPhotoController extends AbstractController
         $this->entityManager->flush();
 
         return $this->json(['ok'], 200);
+    }
+
+    #[Route(path: '/job/{id}/job-photo/review', name: 'review_job_photos')]
+    public function reviewJobPhotos(int $id): Response
+    {
+        if ($this->getUser() === null) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $job = $this->jobRepository->getById($id);
+
+        if ($job->getUserId() !== $this->getUser()->getId()) {
+            return $this->redirectToRoute('author_job_list');
+        }
+
+        return $this->render('job-photo/review_job_photos.html.twig', [
+            'job' => $job,
+            'job_photos' => $job->getJobPhotos(),
+        ]);
+    }
+
+    #[Route(path: '/job/{id}/job-photo/confirm', name: 'confirm_job_photos')]
+    public function confirmJobPhotos(int $id): Response
+    {
+        if ($this->getUser() === null) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $job = $this->jobRepository->getById($id);
+
+        if ($job->getUserId() !== $this->getUser()->getId()) {
+            return $this->redirectToRoute('author_job_list');
+        }
+
+        $job->setStatus(JobStatus::Waiting_for_payment);
+
+        $this->entityManager->persist($job);
+        $this->entityManager->flush();
+
+        $this->addFlash('author_job_list_success', 'Darbas sėkmingai priimtas');
+
+        return $this->redirectToRoute('author_job_list');
+    }
+
+
+    #[Route(path: '/job/{id}/job-photo/view', name: 'view_job_photos')]
+    public function viewJobPhotos(int $id): Response
+    {
+        if ($this->getUser() === null) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $job = $this->jobRepository->getById($id);
+
+        /** @var JobOffer|false $acceptedOffer */
+        $acceptedOffer = $job->getJobOffer()->filter(fn(JobOffer $jobOffer) => $jobOffer->getStatus() === JobOfferStatus::Accepted)->first();
+
+        if (!$acceptedOffer instanceof JobOffer) {
+            return $this->redirectToRoute('specialist_job_list');
+        }
+
+        if ($acceptedOffer->getUserId() !== $this->getUser()->getId()) {
+            return $this->redirectToRoute('specialist_job_list');
+        }
+
+        return $this->render('job-photo/view_job_photos.html.twig', [
+            'job' => $job,
+            'job_photos' => $job->getJobPhotos(),
+        ]);
     }
 }

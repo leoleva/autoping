@@ -95,23 +95,60 @@ class JobController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/job/my/{id}/delete', name: 'delete_job_by_id')]
-    public function deleteJob(int $id): Response
+    #[Route(path: '/job/my/{id}/close', name: 'close_job')]
+    public function closeJob(int $id): Response
     {
         if ($this->getUser() === null) {
             return $this->redirectToRoute('app_login');
         }
 
-        if ($this->jobRepository->find($id)?->getUserId() !== $this->getUser()->getId()) {
+        $job = $this->jobRepository->getById($id);
+
+        if ($job->getUserId() !== $this->getUser()->getId()) {
             return $this->redirectToRoute('author_job_list');
         }
 
-        $this->job->delete($id);
+        $job->setStatus(JobStatus::Closed);
+
+        $this->entityManager->persist($job);
+        $this->entityManager->flush();
 
         $this->addFlash('job_deleted', 'Skelbimas ištrintas sėkmingai');
 
         return $this->redirectToRoute('author_job_list');
     }
+
+
+    #[Route(path: '/job/specialist/{id}/close', name: 'specialist_close_job')]
+    public function declineJob(int $id): Response
+    {
+        if ($this->getUser() === null) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $job = $this->jobRepository->getById($id);
+
+        /** @var JobOffer|false $acceptedOffer */
+        $acceptedOffer = $job->getJobOffer()->filter(fn(JobOffer $jobOffer) => $jobOffer->getStatus() === JobOfferStatus::Accepted)->first();
+
+        if (!$acceptedOffer instanceof JobOffer) {
+            return $this->redirectToRoute('specialist_job_list');
+        }
+
+        if ($acceptedOffer->getUserId() !== $this->getUser()->getId()) {
+            return $this->redirectToRoute('specialist_job_list');
+        }
+
+        $job->setStatus(JobStatus::Closed);
+
+        $this->entityManager->persist($job);
+        $this->entityManager->flush();
+
+        $this->addFlash('success_specialist_job_list', 'Darbo sėkmingai atsisakyta');
+
+        return $this->redirectToRoute('specialist_job_list');
+    }
+
 
     #[Route(path: '/job/{id}/offers', name: 'author_job_offer_list')]
     public function getAuthorJobOfferList(int $id, Request $request): Response
@@ -231,5 +268,26 @@ class JobController extends AbstractController
         return $this->render('job/specialist_job_list.html.twig', [
             'jobs' => $jobs,
         ]);
+    }
+
+    #[Route(path: '/job/{id}/confirm-payment', name: 'confirm_job_payment')]
+    public function confirmPayment(int $id): Response
+    {
+        if ($this->getUser() === null) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $job = $this->jobRepository->getById($id);
+
+        if ($job->getUserId() !== $this->getUser()->getId()) {
+            return $this->redirectToRoute('author_job_list');
+        }
+
+        $job->setStatus(JobStatus::Done);
+
+        $this->entityManager->persist($job);
+        $this->entityManager->flush();
+
+        return $this->redirectToRoute('author_job_list');
     }
 }

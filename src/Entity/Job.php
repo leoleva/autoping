@@ -193,11 +193,15 @@ class Job
     {
         switch ($this->status) {
             case JobStatus::New:
-                return 'Laukiama specialisto';
+                return 'Laukiama specialisto pasiūlymo';
             case JobStatus::Pending:
                 return 'Laukiama pasiūlymo patvirtinimo';
             case JobStatus::Active:
                 return 'Laukiam duomenų';
+            case JobStatus::Waiting_for_review:
+                return 'Laukiama užsakovo patvirtinimo';
+            case JobStatus::Waiting_for_payment:
+                return 'Laukiama apmokėjimo';
             case JobStatus::Done:
                 return 'Atliktas';
             case JobStatus::Closed:

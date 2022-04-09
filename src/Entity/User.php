@@ -40,6 +40,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', enumType: UserType::class)]
     private $userType;
 
+    #[ORM\Column(type: 'string')]
+    private string $name;
+
+    #[ORM\Column(type: 'string')]
+    private string $bankAccount;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -191,6 +197,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAddressId(int $addressId): User
     {
         $this->addressId = $addressId;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     * @return User
+     */
+    public function setName(string $name): User
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBankAccount(): string
+    {
+        return $this->bankAccount;
+    }
+
+    /**
+     * @param string $bankAccount
+     * @return User
+     */
+    public function setBankAccount(string $bankAccount): User
+    {
+        $this->bankAccount = $bankAccount;
         return $this;
     }
 }

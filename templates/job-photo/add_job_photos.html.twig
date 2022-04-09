@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block javascript %}
-    <script type="text/javascript" src="{{ asset('js/add_job_photo.js') }}?{{ random() }}"></script>
+<script type="text/javascript" src="{{ asset('js/add_job_photo.js') }}?{{ random() }}"></script>
 {% endblock %}
 
 {% block body %}
@@ -42,9 +42,8 @@
                                     {{ include('common/job-card.html.twig') }}
                                 </div>
                                 <div class="col-md-9">
-                                    <div class="container">
-                                        <div class="row">
-                                            {% if job_photos.count == 0 %}
+                                    <div class="row">
+                                        {% if job_photos.count == 0 %}
                                             <div class="col-sm-12 add-block">
                                                 <div class="card border-light mb-3">
                                                     <div class="card-header">Pridėjimas</div>
@@ -67,8 +66,8 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            {% else %}
-                                                {% for key, job_photo in job_photos %}
+                                        {% else %}
+                                            {% for key, job_photo in job_photos %}
                                                 <div class="col-sm-12 add-block">
                                                     <div class="card border-light mb-3">
                                                         <div class="card-header">Pridėjimas</div>
@@ -92,19 +91,18 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                {% endfor %}
-                                            {% endif %}
-                                            <div class="col-sm-12">
-                                                <div class="card border-light mb-3">
-                                                    <div class="card-header">Pridėjimas</div>
-                                                    <div class="card-body d-flex justify-content-center">
-                                                        <button type="button" class="add-next-column btn btn-info btn-lg"><i class="bi bi-plus"></i> Pridėt dar vieną</button>
-                                                    </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                        <div class="col-sm-12">
+                                            <div class="card border-light mb-3">
+                                                <div class="card-header">Pridėjimas</div>
+                                                <div class="card-body d-flex justify-content-center">
+                                                    <button type="button" class="add-next-column btn btn-info btn-lg"><i class="bi bi-plus"></i> Pridėt dar vieną</button>
                                                 </div>
                                             </div>
-                                            <hr>
-                                            <button class="w-100 btn btn-primary btn-lg" type="submit">Įkelti duomenis</button>
                                         </div>
+                                        <hr>
+                                        <button class="w-100 btn btn-primary btn-lg" type="submit">Įkelti duomenis</button>
                                     </div>
                                 </div>
                             </div>

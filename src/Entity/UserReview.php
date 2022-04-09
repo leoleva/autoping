@@ -21,9 +21,6 @@ class UserReview
     #[ORM\Column(type: 'integer')]
     private $reviewer_id;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private $title;
-
     #[ORM\Column(type: 'text')]
     private $review;
 
@@ -32,6 +29,9 @@ class UserReview
 
     #[ORM\Column(type: 'datetime')]
     private $created_at;
+
+    #[ORM\Column(type: 'integer')]
+    private int $jobId;
 
     #[ORM\ManyToOne(targetEntity: User::class )]
     #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
@@ -46,7 +46,7 @@ class UserReview
         return $this->id;
     }
 
-    public function getUserId(): ?int
+    public function getUserId(): int
     {
         return $this->user_id;
     }
@@ -58,7 +58,7 @@ class UserReview
         return $this;
     }
 
-    public function getReviewerId(): ?int
+    public function getReviewerId(): int
     {
         return $this->reviewer_id;
     }
@@ -70,19 +70,7 @@ class UserReview
         return $this;
     }
 
-    public function getTitle(): ?string
-    {
-        return $this->title;
-    }
-
-    public function setTitle(string $title): self
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    public function getReview(): ?string
+    public function getReview(): string
     {
         return $this->review;
     }
@@ -94,7 +82,7 @@ class UserReview
         return $this;
     }
 
-    public function getRating(): ?int
+    public function getRating(): int
     {
         return $this->rating;
     }
@@ -106,7 +94,7 @@ class UserReview
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): \DateTimeInterface
     {
         return $this->created_at;
     }
@@ -138,6 +126,18 @@ class UserReview
     public function setReviewer(User $reviewer): UserReview
     {
         $this->reviewer = $reviewer;
+
+        return $this;
+    }
+
+    public function getJobId(): int
+    {
+        return $this->jobId;
+    }
+
+    public function setJobId(int $jobId): UserReview
+    {
+        $this->jobId = $jobId;
 
         return $this;
     }

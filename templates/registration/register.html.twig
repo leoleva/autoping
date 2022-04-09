@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Registracija{% endblock %}
 
 {% block javascript %}
 
@@ -32,6 +32,20 @@
                         });
                     });
                 });
+
+            $(document).on('click', ".user_type", function (){
+                    let formGroup = $(this).parent().parent();
+
+                    let photoId = formGroup.find("input[type='hidden']").val();
+
+                    let request = $.ajax({
+                    url: "/job-photo/"+ photoId +"/delete",
+                    method: "POST",
+                    success: function () {
+                    formGroup.remove();
+                }
+                });
+            });
             });
         </script>
 
@@ -42,6 +56,7 @@
     {% include 'common/navbar.html.twig' %}
     <div class="container py-3">
         <h1>Registracija</h1>
+        <hr>
 
         <main>
             <div class="row row-cols-1 row-cols-md-3 mb-3 ">
@@ -63,26 +78,36 @@
                     <form class="needs-validation" novalidate method="POST">
                         <div class="row g-3">
                             <div class="col-sm-12">
-                                <label for="firstName" class="form-label">El.paštas</label>
-                                <input type="text" class="form-control" placeholder="" value="" required name="email">
+                                <label for="firstName" class="form-label"><span class="text-danger">*</span> El.paštas</label>
+                                <input id="firstName" type="text" class="form-control" placeholder="" value="" required name="email">
                             </div>
 
                             <div class="col-sm-12">
-                                <label for="firstName" class="form-label">Slaptažodis</label>
-                                <input type="password" class="form-control" placeholder="" value="" required name="password">
+                                <label for="password" class="form-label"><span class="text-danger">*</span> Slaptažodis</label>
+                                <input id="password" type="password" class="form-control" placeholder="" value="" required name="password">
                             </div>
 
                             <div class="col-md-12">
-                                <label for="country" class="form-label">Vartotojo tipas</label>
-                                <select class="form-select" name="type" required>
+                                <label for="user_type" class="form-label"><span class="text-danger">*</span> Vartotojo tipas</label>
+                                <select id="user_type" class="form-select" name="type" required>
                                     <option value="">Pasirinkite...</option>
                                     <option value="buyer">Automobilio pirkėjas</option>
                                     <option value="specialist">Automobilių apžiūros specialistas</option>
                                 </select>
                             </div>
 
+                            <div class="col-sm-12 d-none" id="name">
+                                <label for="name" class="form-label"><span class="text-danger">*</span> Vardas pavardė</label>
+                                <input id="name" type="password" class="form-control" placeholder="" value="" required name="password">
+                            </div>
+
+                            <div class="col-sm-12 d-none" id="account">
+                                <label for="account" class="form-label"><span class="text-danger">*</span> Banko sąskaita</label>
+                                <input id="account" type="text" class="form-control" placeholder="" value="" required name="password">
+                            </div>
+
                             <div class="col-md-12">
-                                <label for="country" class="form-label">Šalis</label>
+                                <label for="country" class="form-label"><span class="text-danger">*</span> Šalis</label>
                                 <select class="form-select" name="country_id" required id="country">
                                     <option value="" selected disabled>Pasirinkite...</option>
                                     {% for country in countries %}
@@ -102,13 +127,15 @@
                             </div>
 
                             <div class="col-md-12">
-                                <label for="state" class="form-label">Miestas</label>
+                                <label for="city" class="form-label">Miestas</label>
                                 <select class="form-select" name="city_id" id="city">
                                     <option selected>Pasirinkite...</option>
                                 </select>
                             </div>
+
+                            <div><span class="text-danger">*</span> Būtini laukai</div>
                         </div>
-                        <hr class="my-4">
+                        <hr class="my-2">
                         <button class="w-100 btn btn-primary btn-lg" type="submit">Registruotis</button>
                     </form>
                 </div>
