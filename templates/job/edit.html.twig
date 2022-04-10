@@ -1,40 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Skelbimo redagavimas{% endblock %}
 
 {% block javascript %}
-
-<script type="text/javascript">
-    $( document ).ready(function() {
-
-    jQuery("#country").change(function () {
-        const countryId = this.value
-
-        if (countryId === '') {
-            return;
-        }
-
-        $.get("/countries/" + countryId + "/cities", function( data ) {
-            var $el = jQuery("#city");
-            $el.empty();
-            $.each(data, function(key,value) {
-                $el.append($("<option></option>")
-                    .attr("value", key).text(value));
-            });
-        });
-
-        $.get("/countries/" + countryId + "/states", function( data ) {
-            var $el = jQuery("#state");
-            $el.empty();
-            $.each(data, function(key,value) {
-                $el.append($("<option></option>")
-                    .attr("value", key).text(value));
-            });
-        });
-    });
-});
-</script>
-
+<script type="text/javascript" src="{{ asset('js/address_selection.js') }}"></script>
 {% endblock %}
 
 {% block body %}
@@ -42,6 +11,7 @@
     {% include 'common/navbar.html.twig' %}
     <div class="container py-3">
         <h1>Skelbimo redagavimas</h1>
+        <hr>
 
         <main>
             <div class="row row-cols-1 row-cols-md-3 mb-3 ">
@@ -67,27 +37,27 @@
                     <form class="needs-validation" novalidate method="POST" action="{{ url('edit_job_handle', {id: job.id}) }}">
                         <div class="row g-3">
                             <div class="col-sm-12">
-                                <label for="firstName" class="form-label">Pavadinimas</label>
+                                <label for="firstName" class="form-label"><span class="text-danger">*</span> Pavadinimas</label>
                                 <input type="text" class="form-control" placeholder="" value="{{ job.title }}" required name="title">
                             </div>
 
                             <div class="col-sm-12">
-                                <label for="exampleTextarea" class="form-label mt-4">Aprašymas</label>
+                                <label for="exampleTextarea" class="form-label"><span class="text-danger">*</span> Aprašymas</label>
                                 <textarea class="form-control" id="exampleTextarea" rows="3" required name="text">{{ job.text }}</textarea>
                             </div>
 
                             <div class="col-sm-12">
-                                <label for="firstName" class="form-label">Atlikti iki</label>
+                                <label for="firstName" class="form-label"><span class="text-danger">*</span> Atlikti iki</label>
                                 <input type="date" class="form-control" placeholder="" value="{{ job.dueTo.format('Y-m-d') }}" required name="due_to">
                             </div>
 
                             <div class="col-sm-12">
-                                <label for="firstName" class="form-label">Kaina</label>
+                                <label for="firstName" class="form-label"><span class="text-danger">*</span>  Kaina (EUR)</label>
                                 <input type="number" class="form-control" placeholder="" value="{{ job.amount }}" required name="price">
                             </div>
 
                             <div class="col-md-12">
-                                <label for="country" class="form-label">Šalis</label>
+                                <label for="country" class="form-label"><span class="text-danger">*</span>  Šalis</label>
                                 <select class="form-select" name="country_id" required id="country">
                                     <option value="" selected disabled>Pasirinkite...</option>
                                     {% for country in countries %}
@@ -99,6 +69,7 @@
                             <div class="col-md-12">
                                 <label for="state" class="form-label">Valstija</label>
                                 <select class="form-select" name="state_id" id="state">
+                                    <option value="" selected disabled>Pasirinkite...</option>
                                     {% for state in job_country_states %}
                                         <option value="{{ state.id }}" {% if job_address.stateId == state.id %}selected{% endif %}>{{ state.name }}</option>
                                     {% endfor  %}
@@ -108,14 +79,14 @@
                             <div class="col-md-12">
                                 <label for="state" class="form-label">Miestas</label>
                                 <select class="form-select" name="city_id" id="city">
+                                    <option value="" selected disabled>Pasirinkite...</option>
                                     {% for city in job_country_cities %}
                                         <option value="{{ city.id }}" {% if job_address.cityId == city.id %}selected{% endif %}>{{ city.name }}</option>
                                     {% endfor  %}
                                 </select>
                             </div>
                         </div>
-                        <hr class="my-4">
-                        <button class="w-100 btn btn-primary btn-lg" type="submit">Atnaujinti skelbimą</button>
+                        <button class="w-100 btn btn-primary btn-lg mt-3" type="submit">Atnaujinti skelbimą</button>
                     </form>
                 </div>
             </div>

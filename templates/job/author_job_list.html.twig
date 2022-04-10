@@ -91,6 +91,10 @@
                             <td>{{ job.amount }} {{ job.currency }}</td>
                             <td>{{ job.getLithuanianStatusNaming }}</td>
                             <td>
+                                <a class="badge bg-primary no-text-decoration" href="{{ url('view_job', {id: job.id}) }}">Peržiūrėti</a>
+
+                            </td>
+                           {# <td>
                                 {% if job.jobPhotos.count > 0 %}
                                     <a class="badge bg-success no-text-decoration" href="{{ url('review_job_photos', {id: job.id}) }}">Peržiūrėti duomenis</a>
                                 {% endif %}
@@ -111,7 +115,7 @@
                                         <a class="badge bg-info no-text-decoration" href="{{ url('edit_user_review_view', {id: review.id}) }}">Redaguoti atsiliepimą</a>
                                     {% endif %}
                                 {% endif %}
-                            </td>
+                            </td>#}
                         </tr>
                         {% endfor %}
                         </tbody>

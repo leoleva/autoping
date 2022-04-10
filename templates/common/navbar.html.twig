@@ -11,24 +11,27 @@
                     <div class="collapse navbar-collapse" id="navbarColor01">
                         <ul class="navbar-nav me-auto">
                             <li class="nav-item">
-                                <a class="nav-link {% if app.request.get('_route') == 'job_list' %}active{% endif %}" href="{{ url('job_list') }}">Bendras skelbimų sąrašas
+                                <a class="nav-link {% if app.request.get('_route') == 'job_list' %}active{% endif %}" href="{{ url('job_list') }}">Skelbimai
 {#
                                     <span class="visually-hidden">(current)</span>
 #}
                                 </a>
                             </li>
+                            {% if app.user is not null and app.user.userType.value == 'buyer' %}
                             <li class="nav-item">
                                 <a class="nav-link {% if app.request.get('_route') == 'author_job_list' %}active{% endif %}" href="{{ url('author_job_list') }}">Mano skelbimai</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% if app.request.get('_route') == 'create_job' %}active{% endif %}" href="{{ url('create_job') }}">Įdėti skelbimą</a>
+                                <a class="nav-link {% if app.request.get('_route') == 'add_job_view' %}active{% endif %}" href="{{ url('add_job_view') }}">Įdėti skelbimą</a>
                             </li>
+                            {% else %}
                             <li class="nav-item">
                                 <a class="nav-link {% if app.request.get('_route') == 'specialist_job_list' %}active{% endif %}" href="{{ url('specialist_job_list') }}">Mano darbai</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link {% if app.request.get('_route') == 'specialist_offers' %}active{% endif %}" href="{{ url('specialist_offers') }}">Pasiūlymų užsakymai</a>
                             </li>
+                            {% endif %}
 
 {#                            <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
@@ -44,20 +47,18 @@
                         <ul class="navbar-nav d-flex">
                             {% if app.user == null %}
                                 <li class="nav-item">
-                                    <a class="nav-link" href="/register">Registracija</a>
+                                    <a class="nav-link" href="{{ url('register') }}">Registracija</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="/login">Prisijungimas</a>
+                                    <a class="nav-link" href="{{ url('app_login') }}">Prisijungimas</a>
                                 </li>
                             {% else %}
                                 <li class="nav-item dropdown ">
                                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Pasirinkimai</a>
                                     <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="#">Profilio keitimas</a>
-                                        <a class="dropdown-item" href="#">Another action</a>
-                                        <a class="dropdown-item" href="#">Something else here</a>
+                                        <a class="dropdown-item" href="{{ url('my_profile_update_view') }}">Profilio redagavimas</a>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="#">Atsijungti</a>
+                                        <a class="dropdown-item" href="{{ url('app_logout') }}">Atsijungti</a>
                                     </div>
                                 </li>
                             {% endif %}

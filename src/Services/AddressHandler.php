@@ -16,7 +16,6 @@ class AddressHandler
     public function __construct(
       private EntityManagerInterface $entityManager
     ) {
-
     }
 
     public function resolveAddressFromRequest(Request $request): Address
@@ -41,6 +40,14 @@ class AddressHandler
             $address->setCityId($cityId);
             $address->setCity($this->entityManager->getReference(City::class, $cityId));
         }
+
+        return $address;
+    }
+
+    public function persistAddress(Address $address): Address
+    {
+        $this->entityManager->persist($address);
+        $this->entityManager->flush();
 
         return $address;
     }

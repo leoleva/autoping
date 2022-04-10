@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Address;
@@ -10,13 +12,11 @@ use App\Repository\CountryRepository;
 use App\Repository\StateRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserReviewRepository;
-use App\Services\User as UserService;
+use App\Services\UserUpdater;
+use App\Validator\UserRequestValidator;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ProfileController extends AbstractController
@@ -27,34 +27,17 @@ class ProfileController extends AbstractController
         private StateRepository $stateRepository,
         private CityRepository $cityRepository,
         private UserRepository $userRepository,
-        private EntityManagerInterface $entityManager,
-        private UserPasswordHasherInterface $userPasswordHasher,
-        private UserService $userService,
-        private UserReviewRepository $userReviewRepository
+        private UserUpdater $userUpdater,
+        private UserReviewRepository $userReviewRepository,
+        private UserRequestValidator $userRequestValidator,
     ) {
     }
 
-    #[Route(path: '/profile/me', name: 'my_profile')]
-    public function myProfile(Request $request): Response
+    #[Route(path: '/profile/update', name: 'my_profile_update_view')]
+    public function myProfileView(Request $request): Response
     {
         if ($this->getUser() === null) {
             return $this->redirectToRoute('app_login');
-        }
-
-        if ($request->getMethod() === 'POST') {
-            $newAddress = new Address();
-            $newAddress->setCountryId($request->get('country'));
-            $newAddress->setCityId($request->get('city'));
-            $newAddress->setStateId($request->get('state'));
-
-            $updateParams = $this->userService->updateUser(
-                $this->getUser()->getId(),
-                $request->get('email'),
-                $request->get('password'),
-                $newAddress
-            );
-        } else {
-            $updateParams = [];
         }
 
         $userAddress = $this->addressRepository->findOneBy(['id' => $this->getUser()->getAddressId()]);
@@ -64,8 +47,8 @@ class ProfileController extends AbstractController
             $userState = $this->stateRepository->findOneBy(['id' => $userAddress->getStateId()])?->getId() ?? 0;
             $userCity = $this->cityRepository->findOneBy(['id' => $userAddress->getCityId()])?->getId() ?? 0;
 
-            $userCountriesStates = $this->stateRepository->findBy(['id' => $userAddress->getStateId()]) ?? [];
-            $userCountryCities = $this->cityRepository->findBy(['id' => $userAddress->getCityId()]) ?? [];
+            $userCountriesStates = $this->stateRepository->findBy(['country_id' => $userAddress->getCountryId()]) ?? [];
+            $userCountryCities = $this->cityRepository->findBy(['country_id' => $userAddress->getCountryId()]) ?? [];
         } else {
             $userCountry = 0;
             $userState = 0;
@@ -74,16 +57,46 @@ class ProfileController extends AbstractController
             $userCountryCities = [];
         }
 
-        $responseParams = [
+        return $this->render('profile/my_profile_update.html.twig', [
             'countries' => $this->countryRepository->findAll(),
             'user_country' => $userCountry,
             'user_state' => $userState,
             'user_city' => $userCity,
             'user_country_states' => $userCountriesStates,
             'user_country_cities' => $userCountryCities,
-        ];
+        ]);
+    }
 
-        return $this->render('profile/my_profile.html.twig', array_merge($responseParams, $updateParams));
+    #[Route(path: '/profile/update/handle', name: 'update_my_profile_handle')]
+    public function myProfileHandle(Request $request): Response
+    {
+        if ($this->getUser() === null) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $newAddress = new Address();
+        $newAddress->setCountryId($request->request->getInt('country_id'));
+        $newAddress->setCityId($request->request->getInt('city_id'));
+        $newAddress->setStateId($request->request->getInt('state_id'));
+
+        $errors = $this->userRequestValidator->validateUpdateRequest($request, $this->getUser());
+
+        if (count($errors) === 0) {
+            $this->userUpdater->updateUser(
+                $this->getUser()->getId(),
+                $request->get('email'),
+                $request->get('password'),
+                $request->request->get('account'),
+                $request->request->get('name'),
+                $newAddress
+            );
+
+            $this->addFlash('my_profile_update_view_success', 'Profilis sėkmingai atnaujintas');
+        } else {
+            $this->addFlash('my_profile_update_view_danger', $errors);
+        }
+
+        return $this->redirectToRoute('my_profile_update_view');
     }
 
     #[Route(path: '/profile/{id}', name: 'profile_by_id')]

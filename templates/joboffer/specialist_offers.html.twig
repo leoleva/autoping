@@ -4,11 +4,8 @@
 
 {% block css %}
     <style>
-        .no-text-decoration{
-            text-decoration: none;
-        }
         .no-text-decoration:hover {
-            color: rgba(255, 255, 255, 0.42);
+            color: #187e6a
         }
     </style>
 {% endblock %}
@@ -18,6 +15,7 @@
     {% include 'common/navbar.html.twig' %}
     <div class="container py-3">
         <h1>Išsiųsto darbo pasiūlymai</h1>
+        <hr>
 
         <main>
             <div class="row row-cols-1 row-cols-md-3 mb-3 ">
@@ -55,10 +53,10 @@
                         {% for offer in offers %}
                             <tr>
                                 <th>{{ offer.id }}</th>
-                                <td>{{ offer.job.title }}</td>
+                                <th><a class="no-text-decoration" href="{{ url('view_job', {id: offer.job.id}) }}">{{ offer.job.title }}</a></th>
                                 <th>
                                     {% if offer.text != '' %}
-                                        {{ offer.job.title }}
+                                        {{ offer.text }}
                                     {% else %}
                                         -
                                     {%  endif %}
@@ -74,7 +72,6 @@
                                 </td>
                             </tr>
                         {% endfor %}
-
                         </tbody>
                     </table>
                 </div>

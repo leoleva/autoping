@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Entity\JobOffer as JobOfferEntity;
-use App\Entity\State;
+use App\Entity\Job;
+use App\Entity\JobOffer;
 use App\Entity\User as UserEntity;
 use App\Enum\JobOfferStatus;
+use App\Enum\JobStatus;
 use App\Repository\JobRepository;
 use App\Repository\UserRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Evp\Component\Money\Money;
 
-class JobOffer
+class JobOfferCreator
 {
     public function __construct(
         private JobRepository $jobRepository,
@@ -32,7 +33,8 @@ class JobOffer
         Money $price,
         JobOfferStatus $status,
     ): void {
-        $jobOffer = new JobOfferEntity();
+        $jobOffer = new JobOffer();
+
         $jobOffer->setUserId($user->getId());
         $jobOffer->setText($text);
         $jobOffer->setCreatedAt($createdAt);
@@ -40,15 +42,22 @@ class JobOffer
         $jobOffer->setCurrency($price->getCurrency());
         $jobOffer->setStatus($status);
         $jobOffer->setJobId($jobId);
-        $jobOffer->setJob($this->entityManager->getReference(\App\Entity\Job::class, $jobId));
-        $jobOffer->setUser($this->entityManager->getReference(\App\Entity\User::class, $user->getId()));
 
-        $this->entityManager->persist($jobOffer);
-        $this->entityManager->flush($jobOffer);
+        $jobOffer->setJob($this->entityManager->getReference(Job::class, $jobId));
+        $jobOffer->setUser($this->entityManager->getReference(UserEntity::class, $user->getId()));
 
         $job = $this->jobRepository->getById($jobId);
         $jobOwner = $this->userRepository->getUserById($job->getUserId());
 
         $this->mailer->offerCreated($jobOwner, $job);
+
+        if ($job->getStatus() === JobStatus::New) {
+            $job->setStatus(JobStatus::Pending);
+
+            $this->entityManager->persist($job);
+        }
+
+        $this->entityManager->persist($jobOffer);
+        $this->entityManager->flush($jobOffer);
     }
 }

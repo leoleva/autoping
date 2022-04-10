@@ -4,38 +4,8 @@
 
 
 {% block javascript %}
-
-<script type="text/javascript">
-    $( document ).ready(function() {
-
-    jQuery("#country").change(function () {
-        const countryId = this.value
-
-        if (countryId === '') {
-            return;
-        }
-
-        $.get("/countries/" + countryId + "/cities", function( data ) {
-            var $el = jQuery("#city");
-            $el.empty();
-            $.each(data, function(key,value) {
-                $el.append($("<option></option>")
-                    .attr("value", key).text(value));
-            });
-        });
-
-        $.get("/countries/" + countryId + "/states", function( data ) {
-            var $el = jQuery("#state");
-            $el.empty();
-            $.each(data, function(key,value) {
-                $el.append($("<option></option>")
-                    .attr("value", key).text(value));
-            });
-        });
-    });
-});
-</script>
-
+<script src="{{ asset('js/address_selection.js') }}" type="text/javascript"></script>
+<script src="{{ asset('js/address_selection.js') }}" type="text/javascript"></script>
 {% endblock %}
 
 {% block body %}
@@ -44,39 +14,58 @@
     <div class="container py-3">
 
         <h1>Profilio redagavimas</h1>
+        <hr>
 
         <main>
             <div class="row row-cols-1 row-cols-md-3 mb-3 ">
                 <div class="col-md-12 col-lg-12">
-                    {% if login_successful is defined %}
+                    {% if app.session.flashbag.peek('my_profile_update_view_success') is not empty %}
                         <div class="alert alert-success">
-                            Duomenys atnaujinti sėkmingai
-                        </div>
-                    {% endif %}
-
-                    {% if login_errors is defined %}
-                        <div class="alert alert-danger">
-                            {% for message in login_errors %}
+                            {% for message in app.flashes('my_profile_update_view_success') %}
                                 <div class="mb-1">{{ message }}</div>
                             {% endfor %}
                         </div>
                     {% endif %}
 
-                    <form class="needs-validation" novalidate method="POST">
+                    {% if app.session.flashbag.peek('my_profile_update_view_danger') is not empty %}
+                        <div class="alert alert-danger">
+                            {% for messages in app.flashes('my_profile_update_view_danger') %}
+                                {% for message in messages %}
+                                    <div class="mb-1">{{ message }}</div>
+                                {% endfor %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <form class="needs-validation" novalidate method="POST" action="{{ url('update_my_profile_handle') }}">
                         <div class="row g-3">
                             <div class="col-sm-12">
-                                <label for="firstName" class="form-label">El.paštas</label>
+                                <label for="firstName" class="form-label"><span class="text-danger">*</span> El.paštas</label>
                                 <input type="text" class="form-control" placeholder="" value="{{ app.user.email }}" required name="email">
                             </div>
 
                             <div class="col-sm-12">
-                                <label for="firstName" class="form-label">Slaptažodis</label>
+                                <label for="firstName" class="form-label"><span class="text-danger">*</span> Slaptažodis</label>
                                 <input type="password" class="form-control" placeholder="" value="" required name="password">
                             </div>
 
+                            {% if app.user.userType.value == 'specialist' %}
+
+                                <div class="col-sm-12" id="name_col">
+                                    <label for="name" class="form-label"><span class="text-danger">*</span> Vardas pavardė</label>
+                                    <input id="name" type="text" class="form-control" placeholder="" value="{{ app.user.name }}" required name="name">
+                                </div>
+
+                                <div class="col-sm-12" id="account_col">
+                                    <label for="account" class="form-label"><span class="text-danger">*</span> Banko sąskaita</label>
+                                    <input id="account" type="text" class="form-control" placeholder="" value="{{ app.user.bankAccount }}" required name="account">
+                                </div>
+
+                            {% endif %}
+
                             <div class="col-md-12">
-                                <label for="country" class="form-label">Šalis</label>
-                                <select class="form-select" name="country" required id="country">
+                                <label for="country" class="form-label"><span class="text-danger">*</span> Šalis</label>
+                                <select class="form-select" name="country_id" required id="country">
                                     <option value="" disabled>Pasirinkite...</option>
                                     {% for country in countries %}
                                         <option value="{{ country.id }}" {% if user_country == country.id %}selected{% endif %}>{{ country.name }}</option>
@@ -86,20 +75,18 @@
 
                             <div class="col-md-12">
                                 <label for="state" class="form-label">Valstija</label>
-                                <select class="form-select" name="state" required id="state">
+                                <select class="form-select" name="state_id" required id="state">
                                     <option value="" disabled>Pasirinkite...</option>
                                     {% for state in user_country_states %}
                                         <option value="{{ state.id }}" {% if user_state == state.id %}selected{% endif %}>{{ state.name }}</option>
                                     {% endfor  %}
                                 </select>
-                                <div class="invalid-feedback" style="display: block; color: grey">
-                                    <i>Pasirinktinai</i>
-                                </div>
                             </div>
 
                             <div class="col-md-12">
                                 <label for="state" class="form-label">Miestas</label>
-                                <select class="form-select" name="city" id="city">
+                                <select class="form-select" name="city_id" id="city">
+                                    <option value="" disabled>Pasirinkite...</option>
                                     {% for city in user_country_cities %}
                                         <option value="{{ city.id }}" {% if user_city == city.id %}selected{% endif %}>{{ city.name }}</option>
                                     {% endfor  %}

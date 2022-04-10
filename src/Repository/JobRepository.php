@@ -5,10 +5,12 @@ namespace App\Repository;
 use App\DTO\SearchFilter;
 use App\Entity\Job;
 use App\Enum\JobOfferStatus;
+use App\Enum\JobStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
+use function Doctrine\ORM\QueryBuilder;
 
 /**
  * @method Job|null find($id, $lockMode = null, $lockVersion = null)
@@ -78,6 +80,10 @@ class JobRepository extends ServiceEntityRepository
         if (count($expressions) !== 0) {
             $query = $query->where($query->expr()->andX(...$expressions));
         }
+
+        $query->andHaving(
+            $query->expr()->in('j.status', [JobStatus::New->value, JobStatus::Pending->value])
+        );
 
         return $query->getQuery()->getResult();
     }

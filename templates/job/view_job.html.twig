@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Skelbimo peržiūra{% endblock %}
+
+{% block body %}
+    {% include 'common/navbar.html.twig' %}
+    <div class="container py-3">
+        <h1>Skelbimo peržiūra</h1>
+        <hr>
+
+        <main>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card border mb-9 mb-3">
+                            <div class="card-header">Skelbimas</div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h4 class="card-title">{{ job.title }}</h4>
+                                        <p class="card-title">{{ job.text }}</p>
+                                    </div>
+                                    <div class="col-md-6 ps-5">
+                                        <div class="col-md-12 m-0 p-0">
+                                            <b><i class="bi bi-info-lg"></i> ID:</b> {{ job.id }}
+                                        </div>
+                                        <div class="col-md-12 mt-1">
+                                            <b><i class="bi bi-person"></i> Autorius:</b> <a href="{{ url('profile_by_id', {id: job.user.id}) }}" class="text-decoration-none">{{ job.user.email }}</a>
+                                        </div>
+                                        <div class="col-md-12 mt-2">
+                                            <b><i class="bi bi-clock-fill"></i> Sukurtas:</b> {{ job.createdAt.format('Y-m-d') }}
+                                        </div>
+                                        <div class="col-md-12 mt-2">
+                                            <b><i class="bi bi-alarm"></i> Atnaujintas:</b> {{ job.updatedAt.format('Y-m-d') }}
+                                        </div>
+                                        <div class="col-md-12 mt-2">
+                                            <b><i class="bi bi-calendar-day"></i> Atlikti iki:</b> {{ job.dueTo.format('Y-m-d') }}
+                                        </div>
+                                        <div class="col-md-12 mt-2">
+                                            <b><i class="bi bi-currency-dollar"></i> Užmokestis:</b> {{ job.amount }} {{ job.currency }}
+                                        </div>
+                                        <div class="col-md-12 mt-2">
+                                            <b><i class="bi bi-flag"></i> Šalis:</b> {{ job.address.country.name }}
+                                        </div>
+                                        <div class="col-md-12 mt-2">
+                                            <b><i class="bi bi-hospital"></i> Valstija:</b> {{ job.address.state.name | default('-') }}
+                                        </div>
+                                        <div class="col-md-12 mt-2">
+                                            <b><i class="bi bi-house-door"></i> Miestas:</b> {{ job.address.city.name | default('-') }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+{% endblock %}

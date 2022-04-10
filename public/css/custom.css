@@ -1,0 +1,28 @@
+.no-text-decoration{
+    text-decoration: none;
+}
+.no-text-decoration:hover {
+    color: rgba(255, 255, 255, 0.42);
+}
+.table-success-light {
+    --bs-table-bg: #e0fdec;
+    --bs-table-striped-bg: #dfefe6;
+    --bs-table-striped-color: #000;
+    --bs-table-active-bg: #d9efe5;
+    --bs-table-active-color: #000;
+    --bs-table-hover-bg: #e2f3ec;
+    --bs-table-hover-color: #000;
+    color: #000;
+    border-color: #bcd0c7;
+}
+.table-warning-ligth {
+    --bs-table-bg: #ffd599;
+    --bs-table-striped-bg: #ecb86d;
+    --bs-table-striped-color: #fff;
+    --bs-table-active-bg: #f4a62a;
+    --bs-table-active-color: #000;
+    --bs-table-hover-bg: #f1cf9a;
+    --bs-table-hover-color: #fff;
+    color: #fff;
+    border-color: #eece9d;
+}

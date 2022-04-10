@@ -1,0 +1,153 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Skelbimo peržiūra{% endblock %}
+
+{% block body %}
+    {% include 'common/navbar.html.twig' %}
+    <div class="container py-3">
+        <h1>Skelbimo peržiūra</h1>
+        <hr>
+
+        <main>
+            <div class="container">
+                <div class="row">
+                    {% if app.session.flashbag.peek('author_view_job_success') is not empty %}
+                        <div class="alert alert-success">
+                            {% for message in app.flashes('author_view_job_success') %}
+                                <div class="mb-1">{{ message }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <div class="col-md-3">
+                        <div class="card border mb-12 mb-3">
+                            <div class="card-header">Valdymo blokas</div>
+                            <div class="card-body">
+                                <p class="mb-1">
+                                    <b>Skelbimo būsena:</b> <span class="badge bg-{{ status_class }}">{{ job.lithuanianStatusNaming }}</span>
+                                </p>
+                                <hr class="m-2">
+                                {% if job.jobPhotos.count > 0 %}
+                                    <a class="btn btn-success btn-sm w-100 mb-1" href="{{ url('review_job_photos', {id: job.id}) }}">Peržiūrėti pateiktus duomenis</a>
+                                {% endif %}
+
+                                {% if job.status.value == 'new' or job.status.value == 'pending' %}
+                                    <a class="btn btn-info btn-sm w-100 mb-1" href="{{ url('edit_job_view', {id: job.id}) }}">Redaguoti</a>
+                                {% endif %}
+
+                                {% if job.status.value == 'waiting_for_payment' %}
+                                    <a class="btn btn-info btn-sm w-100 mb-1" href="{{ url('confirm_job_payment', {id: job.id}) }}">Patvirtinti mokėjimą</a>
+                                {% endif %}
+
+                                {% if job.status.value not in ['done', 'closed'] %}
+                                    <a class="btn btn-danger btn-sm w-100 mb-1" href="{{ url('author_close_job', {id: job.id}) }}">Uždaryti skelbimą</a>
+                                {% endif %}
+
+                                {% set review = get_user_review_by_user_id_and_job_id(app.user.id, job.id) %}
+                                {% if review is not null %}
+                                    {% if review == null %}
+                                        <a class="btn btn-info btn-sm w-100 mb-1" href="{{ url('buyer_leaves_review_view', {id: job.id}) }}">Palikti atsliepimą</a>
+                                    {% else %}
+                                        <a class="btn btn-info btn-sm w-100 mb-1" href="{{ url('edit_user_review_view', {id: review.id}) }}">Redaguoti atsiliepimą</a>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-9 col-lg-9">
+                        <div class="card border mb-9 mb-3">
+                            <div class="card-header">Skelbimas</div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h4 class="card-title">{{ job.title }}</h4>
+                                        <p class="card-title">{{ job.text }}</p>
+                                    </div>
+                                    <div class="col-md-6 ps-5">
+                                        <div class="col-md-12 m-0 p-0">
+                                            <b><i class="bi bi-info-lg"></i> ID:</b> {{ job.id }}
+                                        </div>
+                                        <div class="col-md-12 mt-1">
+                                            <b><i class="bi bi-person"></i> Autorius:</b> <a href="{{ url('profile_by_id', {id: job.user.id}) }}" class="text-decoration-none">{{ job.user.email }}</a>
+                                        </div>
+                                        <div class="col-md-12 mt-2">
+                                            <b><i class="bi bi-clock-fill"></i> Sukurtas:</b> {{ job.createdAt.format('Y-m-d') }}
+                                        </div>
+                                        <div class="col-md-12 mt-2">
+                                            <b><i class="bi bi-alarm"></i> Atnaujintas:</b> {{ job.updatedAt.format('Y-m-d') }}
+                                        </div>
+                                        <div class="col-md-12 mt-2">
+                                            <b><i class="bi bi-calendar-day"></i> Atlikti iki:</b> {{ job.dueTo.format('Y-m-d') }}
+                                        </div>
+                                        <div class="col-md-12 mt-2">
+                                            <b><i class="bi bi-currency-dollar"></i> Užmokestis:</b> {{ job.amount }} {{ job.currency }}
+                                        </div>
+                                        <div class="col-md-12 mt-2">
+                                            <b><i class="bi bi-flag"></i> Šalis:</b> {{ job.address.country.name }}
+                                        </div>
+                                        <div class="col-md-12 mt-2">
+                                            <b><i class="bi bi-hospital"></i> Valstija:</b> {{ job.address.state.name | default('-') }}
+                                        </div>
+                                        <div class="col-md-12 mt-2">
+                                            <b><i class="bi bi-house-door"></i> Miestas:</b> {{ job.address.city.name | default('-') }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card border mb-9">
+                            <div class="card-header">Specialistų pasiūlymai</div>
+                            <div class="card-body">
+                                <div class="row">
+                                    {% if app.session.flashbag.peek('author_view_job_offer_success') is not empty %}
+                                        <div class="alert alert-success">
+                                            {% for message in app.flashes('author_view_job_offer_success') %}
+                                                <div class="mb-1">{{ message }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    {% if job.jobOffer.count > 0 %}
+
+                                        <table class="table table-hover">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">ID</th>
+                                                <th scope="col">Žinutė</th>
+                                                <th scope="col">Sukurtas</th>
+                                                <th scope="col">Kaina</th>
+                                                <th scope="col">Statusas</th>
+                                                <th scope="col">Veiskmai</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            {% for offer in job.jobOffer %}
+                                                <tr {% if offer.status.value == 'accepted' %}class="table-success-light"{% endif %}>
+                                                    <th>{{ offer.id }}</th>
+                                                    <td>{{ offer.text }}</td>
+                                                    <td>{{ offer.createdAt.format('Y-m-d') }}</td>
+                                                    <td>{{ offer.amount }} {{ offer.currency }}</td>
+                                                    <td>{{ offer.getLithuanianStatusNamingForOffer }}</td>
+                                                    <td>
+                                                        {% if offer.canBeEditedByBuyer %}
+                                                            <a class="badge bg-primary no-text-decoration" href="{{ url('accept_job_offer', {id: offer.id}) }}">Priimti</a>
+                                                            <a class="badge bg-danger no-text-decoration" href="{{ url('decline_job_offer_handle', {id: offer.id}) }}">Atmesti</a>
+                                                        {% else %}
+                                                            -
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    {% else %}
+                                        <p class="text-warning m-0">Pasiūlymų nėra!</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+{% endblock %}

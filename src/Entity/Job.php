@@ -52,14 +52,19 @@ class Job
 
     #[ORM\OneToMany(mappedBy: 'job', targetEntity: JobOffer::class)]
     #[ORM\JoinColumn(name: 'id', referencedColumnName: 'job_id', unique: false)]
+    #[ORM\OrderBy(['id' => 'desc'])]
     private Collection $jobOffer;
 
     #[ORM\OneToMany(mappedBy: 'job', targetEntity: JobPhoto::class)]
     private $jobPhotos;
 
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private User $user;
+
     public function __construct()
     {
-        $this->jobOffer = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->jobOffer = new ArrayCollection();
         $this->jobPhotos = new ArrayCollection();
     }
 
@@ -193,13 +198,13 @@ class Job
     {
         switch ($this->status) {
             case JobStatus::New:
-                return 'Laukiama specialisto pasiūlymo';
+                return 'Laukiama pasiūlymų';
             case JobStatus::Pending:
                 return 'Laukiama pasiūlymo patvirtinimo';
             case JobStatus::Active:
                 return 'Laukiam duomenų';
             case JobStatus::Waiting_for_review:
-                return 'Laukiama užsakovo patvirtinimo';
+                return 'Laukiama duomenų patvirtinimo';
             case JobStatus::Waiting_for_payment:
                 return 'Laukiama apmokėjimo';
             case JobStatus::Done:
@@ -275,6 +280,18 @@ class Job
                 $jobPhoto->setJob(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+
+    public function setUser(User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }
