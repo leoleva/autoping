@@ -22,7 +22,7 @@
         border-color: #bcd0c7;
     }
     .table-warning-ligth {
-        --bs-table-bg: #ffd599;
+        --bs-table-bg: #ffab5a;
         --bs-table-striped-bg: #ecb86d;
         --bs-table-striped-color: #fff;
         --bs-table-active-bg: #f4a62a;
@@ -83,7 +83,7 @@
                         <tbody>
 
                         {% for job in jobs %}
-                        <tr {% if job.status.value == 'waiting_for_review' %}class="table-warning"{% endif %}>
+                        <tr {% if job.status.value == 'waiting_for_review' %}class="table-warning-ligth"{% endif %}>
                             <th>{{ job.id }}</th>
                             <td>{{ job.title }}</td>
                             <td>{{ job.dueTo.format('Y-m-d') }}</td>
@@ -91,7 +91,7 @@
                             <td>{{ job.amount }} {{ job.currency }}</td>
                             <td>{{ job.getLithuanianStatusNaming }}</td>
                             <td>
-                                <a class="badge bg-primary no-text-decoration" href="{{ url('view_job', {id: job.id}) }}">Peržiūrėti</a>
+                                <a class="badge bg-primary no-text-decoration" href="{{ url('author_view_job', {id: job.id}) }}">Peržiūrėti</a>
 
                             </td>
                            {# <td>

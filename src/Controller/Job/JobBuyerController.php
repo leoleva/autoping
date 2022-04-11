@@ -13,9 +13,9 @@ use App\Repository\CountryRepository;
 use App\Repository\JobRepository;
 use App\Repository\StateRepository;
 use App\Services\AddressHandler;
-use App\Services\Job\CloseJobHandler;
+use App\Services\Job\JobStatusHandler;
+use App\Services\Job\JobUpdater;
 use App\Services\JobCreator;
-use App\Services\JobUpdater;
 use App\Validator\JobAddValidator;
 use App\Validator\JobUpdateValidator;
 use DateTime;
@@ -27,17 +27,16 @@ use Symfony\Component\Routing\Annotation\Route;
 class JobBuyerController extends AbstractController
 {
     public function __construct(
-        private CountryRepository $countryRepository,
-        private JobAddValidator $jobAddValidator,
-        private AddressHandler $addressHandler,
-        private JobCreator $jobCreator,
-        private JobRepository $jobRepository,
-        private CityRepository $cityRepository,
-        private StateRepository $stateRepository,
-        private AddressRepository $addressRepository,
+        private CountryRepository  $countryRepository,
+        private JobAddValidator    $jobAddValidator,
+        private AddressHandler     $addressHandler,
+        private JobCreator         $jobCreator,
+        private JobRepository      $jobRepository,
+        private CityRepository     $cityRepository,
+        private StateRepository    $stateRepository,
+        private AddressRepository  $addressRepository,
         private JobUpdateValidator $jobUpdateValidator,
-        private JobUpdater $jobUpdater,
-        private CloseJobHandler $closeJobHandler,
+        private JobUpdater         $jobUpdater
     ) {
     }
 
@@ -199,9 +198,70 @@ class JobBuyerController extends AbstractController
             return $this->redirectToRoute('author_job_list');
         }
 
-        $this->closeJobHandler->close($job);
+        $this->jobUpdater->updateJobStatus($job->getId(), JobStatus::Closed);
 
         $this->addFlash('author_view_job_success', 'Skelbimas uždarytas sėkmingai');
+
+        return $this->redirectToRoute('author_view_job', ['id' => $job->getId()]);
+    }
+
+    #[Route(path: '/job/my/{id}/decline-job-photos', name: 'decline_job_photos')]
+    public function declineJobPhotos(int $id): Response
+    {
+        if ($this->getUser() === null) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $job = $this->jobRepository->getById($id);
+
+        if ($job->getUserId() !== $this->getUser()->getId()) {
+            return $this->redirectToRoute('author_job_list');
+        }
+
+        $this->jobUpdater->updateJobStatus($job->getId(), JobStatus::Active);
+
+        $this->addFlash('author_view_job_success', 'Duomenis atmesti');
+
+        return $this->redirectToRoute('author_view_job', ['id' => $job->getId()]);
+    }
+
+
+    #[Route(path: '/job/{id}/job-photo/confirm', name: 'confirm_job_photos')]
+    public function confirmJobPhotos(int $id): Response
+    {
+        if ($this->getUser() === null) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $job = $this->jobRepository->getById($id);
+
+        if ($job->getUserId() !== $this->getUser()->getId()) {
+            return $this->redirectToRoute('author_job_list');
+        }
+
+        $this->jobUpdater->updateJobStatus($job->getId(), JobStatus::Waiting_for_payment);
+
+        $this->addFlash('author_view_job_success', 'Darbas sėkmingai priimtas');
+
+        return $this->redirectToRoute('author_view_job', ['id' => $job->getId()]);
+    }
+
+    #[Route(path: '/job/{id}/confirm-payment', name: 'confirm_job_payment')]
+    public function confirmPayment(int $id): Response
+    {
+        if ($this->getUser() === null) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $job = $this->jobRepository->getById($id);
+
+        if ($job->getUserId() !== $this->getUser()->getId()) {
+            return $this->redirectToRoute('author_job_list');
+        }
+
+        $this->jobUpdater->updateJobStatus($job->getId(), JobStatus::Done);
+
+        $this->addFlash('author_view_job_success', 'Darbas sėkmingai pabaigtas');
 
         return $this->redirectToRoute('author_view_job', ['id' => $job->getId()]);
     }

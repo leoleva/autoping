@@ -2,17 +2,6 @@
 
 {% block title %}Register{% endblock %}
 
-{% block css %}
-    <style>
-        .no-text-decoration{
-            text-decoration: none;
-        }
-        .no-text-decoration:hover {
-            color: rgba(255, 255, 255, 0.42);
-        }
-    </style>
-{% endblock %}
-
 {% block body %}
 
     {% include 'common/navbar.html.twig' %}
@@ -22,24 +11,9 @@
         <main>
             <div class="row row-cols-1 row-cols-md-3 mb-3 ">
                 <div class="col-md-12 col-lg-12">
-                    {% if app.session.flashbag.peek('job_deleted') is not empty %}
-                        <div class="alert alert-success">
-                            {% for message in app.flashes('job_deleted') %}
-                                <div class="mb-1">{{ message }}</div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
                     {% if app.session.flashbag.peek('success_specialist_job_list') is not empty %}
                         <div class="alert alert-success">
                             {% for message in app.flashes('success_specialist_job_list') %}
-                                <div class="mb-1">{{ message }}</div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-
-                    {% if app.session.flashbag.peek('offer_accepted') is not empty %}
-                        <div class="alert alert-success">
-                            {% for message in app.flashes('offer_accepted') %}
                                 <div class="mb-1">{{ message }}</div>
                             {% endfor %}
                         </div>
@@ -61,14 +35,14 @@
 
                         {% for job in jobs %}
                             <tr>
-                                <th>{{ job.id }}</th>
-                                <td>{{ job.title }}</td>
+                                <td>{{ job.id }}</td>
+                                <td><a class="no-text-decoration" href="{{ url('view_job', {id: job.id}) }}">{{ job.title }}</a></td>
                                 <td>{{ job.dueTo.format('Y-m-d') }}</td>
                                 <td>{{ job.createdAt.format('Y-m-d') }}</td>
                                 <td>{{ job.amount }} {{ job.currency }}</td>
                                 <td>{{ job.getLithuanianStatusNaming }}</td>
                                 <td>
-                                    {% if job.jobPhotos.count == 0 %}
+                                    {% if job.jobPhotos.count == 0  and job.status.value in ['active', 'waiting_for_review'] %}
                                         <a class="badge bg-info no-text-decoration" href="{{ url('add_job_photos_view', {id: job.id}) }}">Įkelti duomenis</a>
                                     {% else %}
                                         {% if job.status.value == 'active' or job.status.value == 'waiting_for_review' %}

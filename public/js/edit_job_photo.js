@@ -9,7 +9,6 @@ const modelHtml = "<div class=\"col-sm-12 add-block\">\n" +
     "                                        </div>\n" +
     "                                        <div class=\"image-selected text-center d-none\">\n" +
     "                                            <img src=\"\" style=\"max-height: 30em\" class=\"img-fluid rounded mx-auto d-block\" alt=\"...\">\n" +
-    "                                            <button type=\"button\" class=\"remove-photo btn btn-super-sm btn-danger mt-1\">Pašalinti nuotrauką</button>\n" +
     "                                        </div>\n" +
     "                                        <label for=\"aprasymas\" class=\"form-label mt-1\">Aprašymas</label>\n" +
     "                                        <textarea class=\"form-control\" id=\"aprasymas\" rows=\"3\" name=\"text[0]\" required></textarea>\n" +
@@ -44,10 +43,12 @@ $(function () {
        let row = $(this).parent().parent().parent().parent();
 
        let lastAddBlock = $('.add-block');
-       let i = lastAddBlock.last().length !== 0 ? lastAddBlock.last().find('textarea').attr('name').replace ( /[^\d.]/g, '' ).replace ( /[^\d.]/g, '' ) : 0;
+       let i = $('#count').val();
        let model = $(modelHtml);
 
        i++;
+
+        $('#count').val(i);
 
        model.find("input[type='file']").attr('name', 'file['+i+']');
        model.find("textarea").attr('name', 'text['+i+']');
@@ -55,7 +56,7 @@ $(function () {
        if (lastAddBlock.last().length !== 0) {
            $(model).insertAfter(lastAddBlock.last());
        } else {
-           $('.row').prepend(model);
+           $('#colum_rows').prepend(model);
        }
     });
     $(document).on('click', ".remove-block", function () {

@@ -1,0 +1,18 @@
+<div class="card border mb-12 mb-3">
+    <div class="card-header">Santrauka</div>
+    <div class="card-body">
+        <div class="pb-2">
+            <b><i class="bi bi-person"></i> Vartotojas:</b> <a href="{{ url('profile_by_id', {id: user.id}) }}" class="text-decoration-none">{{ job.user.email }}</a>
+        </div>
+        <div class="pb-2">
+            <b><i class="bi bi-card-text"></i> Skelbimas:</b> <a href="{{ url('view_job', {id: job.id}) }}" class="text-decoration-none">{{ job.title }}</a>
+        </div>
+        <div class="pb-2">
+            <b><i class="bi bi-clock"></i> Sukurtas:</b> {{ job.createdAt.format('Y-m-d') }}
+        </div>
+        <div class="pb-2">
+            <b><i class="bi bi-currency-dollar"></i> Užmokestis:</b> {{ job.amount }} {{ job.currency }}
+        </div>
+        {% block additional_job_card_bottom %}{% endblock %}
+    </div>
+</div>

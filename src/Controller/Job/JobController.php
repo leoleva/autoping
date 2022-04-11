@@ -11,7 +11,6 @@ use App\Enum\JobOfferStatus;
 use App\Enum\JobStatus;
 use App\Repository\CityRepository;
 use App\Repository\CountryRepository;
-use App\Repository\JobOfferRepository;
 use App\Repository\JobRepository;
 use App\Repository\StateRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -27,7 +26,6 @@ class JobController extends AbstractController
         private StateRepository $stateRepository,
         private CityRepository $cityRepository,
         private EntityManagerInterface $entityManager,
-        private JobOfferRepository $jobOfferRepository
     ) {}
 
     #[Route(path: '/job/list', name: 'job_list')]
@@ -68,27 +66,6 @@ class JobController extends AbstractController
         return $this->render('job/specialist_job_list.html.twig', [
             'jobs' => $jobs,
         ]);
-    }
-
-    #[Route(path: '/job/{id}/confirm-payment', name: 'confirm_job_payment')]
-    public function confirmPayment(int $id): Response
-    {
-        if ($this->getUser() === null) {
-            return $this->redirectToRoute('app_login');
-        }
-
-        $job = $this->jobRepository->getById($id);
-
-        if ($job->getUserId() !== $this->getUser()->getId()) {
-            return $this->redirectToRoute('author_job_list');
-        }
-
-        $job->setStatus(JobStatus::Done);
-
-        $this->entityManager->persist($job);
-        $this->entityManager->flush();
-
-        return $this->redirectToRoute('author_job_list');
     }
 
     #[Route(path: '/job/view/{id}', name: 'view_job')]

@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Rezultatų redagavimas{% endblock %}
 
 {% block stylesheets %}
     <style>
@@ -21,7 +21,7 @@
 
     {% include 'common/navbar.html.twig' %}
     <div class="container py-3">
-        <h1>Apžiūros rezultatų talpinimas</h1>
+        <h1>Apžiūros rezultatų redagavimas</h1>
         <hr>
 
         <main>
@@ -43,7 +43,9 @@
                                     {{ include('common/job-card.html.twig') }}
                                 </div>
                                 <div class="col-md-9">
-                                    <div class="row">
+                                    <div class="row" id="colum_rows">
+                                        <input type="hidden" id="count" value="{{ job_photos.count }}">
+
                                         {% for key, job_photo in job_photos %}
                                             <div class="col-sm-12 add-block">
                                                 <div class="card border-light mb-3">
@@ -73,7 +75,7 @@
                                             </div>
                                         </div>
                                         <hr>
-                                        <button class="w-100 btn btn-primary btn-lg" type="submit">Įkelti duomenis</button>
+                                        <button class="w-100 btn btn-primary btn-lg" type="submit">Atnaujinti duomenis</button>
                                     </div>
                                 </div>
                             </div>

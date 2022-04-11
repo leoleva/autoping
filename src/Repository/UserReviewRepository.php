@@ -49,13 +49,13 @@ class UserReviewRepository extends ServiceEntityRepository
 
     public function getById(int $id): UserReview
     {
-        $job = $this->find($id);
+        $review = $this->find($id);
 
-        if ($job === null) {
+        if ($review === null) {
             throw new \GeneralException('Atsiliepimas nerastas');
         }
 
-        return $job;
+        return $review;
     }
 
 

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\Services\Job;
 
 use App\Entity\Address;
-use App\Entity\User;
+use App\Enum\JobStatus;
 use App\Repository\AddressRepository;
 use App\Repository\JobRepository;
 use DateTime;
@@ -43,6 +43,16 @@ class JobUpdater
         $job->setCurrency($money->getCurrency());
 
         $this->entityManager->persist($jobAddress);
+        $this->entityManager->persist($job);
+        $this->entityManager->flush();
+    }
+
+    public function updateJobStatus(int $jobId, JobStatus $status): void
+    {
+        $job = $this->jobRepository->getById($jobId);
+
+        $job->setStatus($status);
+
         $this->entityManager->persist($job);
         $this->entityManager->flush();
     }

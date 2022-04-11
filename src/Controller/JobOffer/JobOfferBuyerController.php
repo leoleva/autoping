@@ -58,7 +58,7 @@ class JobOfferBuyerController extends AbstractController
 
         $this->acceptJobOfferHandler->accept($offer);
 
-        $this->addFlash('offer_accepted', 'Pasiūlymas sėkmingai priimtas');
+        $this->addFlash('author_view_job_success', 'Pasiūlymas sėkmingai priimtas');
 
         return $this->redirectToRoute('author_view_job', ['id' => $offer->getJob()->getId()]);
     }

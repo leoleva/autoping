@@ -54,7 +54,7 @@ class JobOfferSpecialistController extends AbstractController
         $this->entityManager->remove($offer);
         $this->entityManager->flush();
 
-        $this->addFlash('offer_removed', 'Pasiūlymas pašalintas sėkmingai');
+        $this->addFlash('specialist_offer_success', 'Pasiūlymas pašalintas sėkmingai');
 
         return $this->redirectToRoute('specialist_offers');
     }
@@ -92,7 +92,7 @@ class JobOfferSpecialistController extends AbstractController
             JobOfferStatus::New,
         );
 
-        $this->addFlash('offer_created', 'Pasiūlymas pridėtas sėkmingai');
+        $this->addFlash('specialist_offer_success', 'Pasiūlymas išsiųstas sėkmingai');
 
         return $this->redirectToRoute('specialist_offers');
     }
@@ -114,6 +114,8 @@ class JobOfferSpecialistController extends AbstractController
             new Money($job->getAmount(), $job->getCurrency()),
             JobOfferStatus::New,
         );
+
+        $this->addFlash('specialist_offer_success', 'Pasiūlymas išsiųstas sėkmingai');
 
         return $this->redirectToRoute('specialist_offers');
     }

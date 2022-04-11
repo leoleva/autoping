@@ -42,8 +42,8 @@
                                     <a class="btn btn-danger btn-sm w-100 mb-1" href="{{ url('author_close_job', {id: job.id}) }}">Uždaryti skelbimą</a>
                                 {% endif %}
 
+                                {% if job.status.value == 'done' %}
                                 {% set review = get_user_review_by_user_id_and_job_id(app.user.id, job.id) %}
-                                {% if review is not null %}
                                     {% if review == null %}
                                         <a class="btn btn-info btn-sm w-100 mb-1" href="{{ url('buyer_leaves_review_view', {id: job.id}) }}">Palikti atsliepimą</a>
                                     {% else %}

@@ -58,6 +58,6 @@ class JobOfferCreator
         }
 
         $this->entityManager->persist($jobOffer);
-        $this->entityManager->flush($jobOffer);
+        $this->entityManager->flush();
     }
 }

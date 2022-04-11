@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\JobOffer;
 
+use App\Entity\Job;
 use App\Entity\JobOffer;
 use App\Entity\User;
 use App\Enum\JobOfferStatus;
@@ -16,10 +17,8 @@ class AcceptedOfferValidator
     ) {
     }
 
-    public function isUserJobAssignee(int $jobId, User $user): bool
+    public function isUserJobAssigneeByJobAndUser(Job $job, User $user): bool
     {
-        $job = $this->jobRepository->getById($jobId);
-
         /** @var JobOffer|false $acceptedOffer */
         $acceptedOffer = $job->getJobOffer()
             ->filter(fn(JobOffer $jobOffer): bool => $jobOffer->getStatus() === JobOfferStatus::Accepted)
@@ -34,5 +33,12 @@ class AcceptedOfferValidator
         }
 
         return true;
+    }
+
+    public function isUserJobAssigneeByIdAndUser(int $jobId, User $user): bool
+    {
+        $job = $this->jobRepository->getById($jobId);
+
+        return $this->isUserJobAssigneeByJobAndUser($job, $user);
     }
 }

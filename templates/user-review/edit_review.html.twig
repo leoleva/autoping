@@ -16,20 +16,20 @@
 
         <main>
             <div class="container">
-                {% if job_add_errors is defined %}
-                    <div class="alert alert-danger">
-                        {% for message in job_add_errors %}
+                {% if app.session.flashbag.peek('edit_review_success') is not empty %}
+                    <div class="alert alert-success">
+                        {% for message in app.flashes('edit_review_success') %}
                             <div class="mb-1">{{ message }}</div>
                         {% endfor %}
                     </div>
                 {% endif %}
 
-                <form class="needs-validation" method="POST" action="{{ url('edit_review_handle', {id: job.id}) }}">
+                <form class="needs-validation" method="POST" action="{{ url('edit_review_handle', {id: user_review.id}) }}">
                     <div class="row">
                         <div class="col-m-12">
                             <div class="row">
                                 <div class="col-md-3">
-                                    {% embed 'common/job-card.html.twig' %}
+                                    {% embed 'common/review-summary.html.twig' %}
                                         {% block additional_job_card_bottom %}
                                             <hr>
                                             <a class="w-100 btn btn-danger btn-sm mt-2" type="submit" href="{{ url('delete_review_handle', {id: user_review.id}) }}">Ištrinti atsilipiemą</a>

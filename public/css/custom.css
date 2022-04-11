@@ -4,6 +4,10 @@
 .no-text-decoration:hover {
     color: rgba(255, 255, 255, 0.42);
 }
+td .no-text-decoration:hover {
+    color: rgb(143, 211, 195);
+}
+
 .table-success-light {
     --bs-table-bg: #e0fdec;
     --bs-table-striped-bg: #dfefe6;

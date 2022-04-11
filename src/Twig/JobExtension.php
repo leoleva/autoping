@@ -64,7 +64,7 @@ class JobExtension extends AbstractExtension
         );
         foreach ($string as $k => &$v) {
             if ($diff->$k) {
-                $v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? '' : '');
+                $v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? '.' : '');
             } else {
                 unset($string[$k]);
             }

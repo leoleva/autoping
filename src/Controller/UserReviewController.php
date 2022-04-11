@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\Country;
 use App\Entity\JobOffer;
-use App\Entity\User;
-use App\Entity\UserReview;
 use App\Enum\JobOfferStatus;
 use App\Enum\UserType;
 use App\Repository\JobRepository;
 use App\Repository\UserReviewRepository;
+use App\Services\UserReview\UserReviewHandler;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -21,9 +20,9 @@ class UserReviewController extends AbstractController
     public function __construct(
         private JobRepository $jobRepository,
         private EntityManagerInterface $entityManager,
-        private UserReviewRepository $userReviewRepository
+        private UserReviewRepository $userReviewRepository,
+        private UserReviewHandler $userReviewHandler
     ) {
-
     }
 
     #[Route(path: '/user-review/job/{id}/add/buyer', name: 'buyer_leaves_review_view')]
@@ -39,8 +38,12 @@ class UserReviewController extends AbstractController
             return $this->redirectToRoute('author_job_list');
         }
 
+        /** @var JobOffer $acceptedOffer */
+        $acceptedOffer = $job->getJobOffer()->filter(fn(JobOffer $jobOffer) => $jobOffer->getStatus() === JobOfferStatus::Accepted)->first();
+
         return $this->render('user-review/add_review.html.twig', [
             'job' => $job,
+            'user' => $acceptedOffer->getUser(),
         ]);
     }
 
@@ -57,11 +60,11 @@ class UserReviewController extends AbstractController
         $acceptedOffer = $job->getJobOffer()->filter(fn(JobOffer $jobOffer) => $jobOffer->getStatus() === JobOfferStatus::Accepted)->first();
 
         if (!$acceptedOffer instanceof JobOffer) {
-            return $this->redirectToRoute('specialist_job_list');
+            return $this->redirectToRoute('job_list');
         }
 
-        if ($job->getUserId() !== $this->getUser()->getId() || $acceptedOffer->getUserId() !== $this->getUser()->getId()) {
-            return $this->redirectToRoute('specialist_job_list');
+        if ($acceptedOffer->getUserId() !== $this->getUser()->getId()) {
+            return $this->redirectToRoute('job_list');
         }
 
         return $this->render('user-review/add_review.html.twig', [
@@ -85,35 +88,22 @@ class UserReviewController extends AbstractController
             return $this->redirectToRoute('author_job_list');
         }
 
-        if ($job->getUserId() !== $this->getUser()->getId() || $acceptedOffer->getUserId() !== $this->getUser()->getId()) {
+        if ($job->getUserId() !== $this->getUser()->getId() && $acceptedOffer->getUserId() !== $this->getUser()->getId()) {
             return $this->redirectToRoute('specialist_job_list');
         }
 
-        $userReviews = new UserReview();
-        $userReviews->setRating((int)$request->request->get('rating'));
-        $userReviews->setReview($request->request->get('text'));
-        $userReviews->setReviewer($this->getUser());
-        $userReviews->setReviewerId($this->getUser()->getId());
-        if ($this->getUser()->getUserType() === UserType::Buyer) {
-            $userReviews->setUser($acceptedOffer->getUser());
-        } else {
-            $userReviews->setUser($this->entityManager->getReference(User::class, $job->getUserId()));
-        }
-        $userReviews->setCreatedAt(new \DateTime());
-        $userReviews->setJobId($job->getId());
+        $this->userReviewHandler->createReview(
+            (int)$request->request->get('rating'),
+            $request->request->get('text'),
+            $this->getUser(),
+            $this->getUser()->getUserType() === UserType::Buyer ? $acceptedOffer->getUser() : $job->getUser(),
+            new DateTime(),
+            $job->getId()
+        );
 
-        $this->entityManager->persist($userReviews);
-        $this->entityManager->flush();
+        $this->addFlash('edit_review_success', 'Atsiliepimas sėkmingai pridėtas');
 
-        if ($this->getUser()->getUserType() === UserType::Buyer) {
-            $this->addFlash('author_job_list_success', 'Atsiliepimas sėkmingai pridėtas');
-
-            return $this->redirectToRoute('author_job_list');
-        } else {
-            $this->addFlash('success_specialist_job_list', 'Atsiliepimas sėkmingai pridėtas');
-
-            return $this->redirectToRoute('specialist_job_list');
-        }
+        return $this->redirectToRoute('edit_user_review_view', ['id' => $job->getId()]);
     }
 
     #[Route(path: '/user-review/{id}/edit', name: 'edit_user_review_view')]
@@ -140,6 +130,7 @@ class UserReviewController extends AbstractController
         return $this->render('user-review/edit_review.html.twig', [
             'job' => $job,
             'user_review' => $userReview,
+            'user' => $this->getUser()->getUserType() === UserType::Buyer ? $acceptedOffer->getUser() : $job->getUser(),
         ]);
     }
 
@@ -164,15 +155,15 @@ class UserReviewController extends AbstractController
             return $this->redirectToRoute('job_list');
         }
 
-        $userReview->setRating((int)$request->request->get('rating'));
-        $userReview->setReview($request->request->get('text'));
+        $this->userReviewHandler->updateReview(
+            $id,
+            $request->request->get('text'),
+            (int)$request->request->get('rating'),
+        );
 
-        $this->entityManager->persist($userReview);
-        $this->entityManager->flush();
+        $this->addFlash('edit_review_success', 'Atsiliepimas sėkmingai atnaujintas');
 
-        $this->addFlash('author_job_list_success', 'Atsiliepimas sėkmingai atnaujintas');
-
-        return $this->redirectToRoute('author_job_list');
+        return $this->redirectToRoute('edit_user_review_view', ['id' => $userReview->getId()]);
     }
 
     #[Route(path: '/user-review/{id}/delete', name: 'delete_review_handle')]
@@ -196,11 +187,16 @@ class UserReviewController extends AbstractController
             return $this->redirectToRoute('job_list');
         }
 
-        $this->entityManager->remove($userReview);
-        $this->entityManager->flush();
+        $this->userReviewHandler->remove($id);
 
-        $this->addFlash('author_job_list_success', 'Atsiliepimas sėkmingai pašalintas');
+        if ($this->getUser()->getUserType() === UserType::Buyer) {
+            $this->addFlash('author_job_list_success', 'Atsiliepimas sėkmingai pašalintas');
 
-        return $this->redirectToRoute('author_job_list');
+            return $this->redirectToRoute('author_job_list');
+        } else {
+            $this->addFlash('success_specialist_job_list', 'Atsiliepimas sėkmingai pašalintas');
+
+            return $this->redirectToRoute('specialist_job_list');
+        }
     }
 }

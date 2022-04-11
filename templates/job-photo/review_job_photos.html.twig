@@ -51,7 +51,7 @@
                                             {% if job.status.value == 'waiting_for_review' %}
                                                 <hr>
                                                 <a class="w-100 btn btn-success btn-sm" type="submit" href="{{ url('confirm_job_photos', {id: job.id}) }}">Patvirtinti duomenis</a>
-                                                <a class="w-100 btn btn-danger btn-sm mt-2" type="submit" href="">Atmesti duomenis</a>
+                                                <a class="w-100 btn btn-danger btn-sm mt-2" type="submit" href="{{ url('decline_job_photos', {id: job.id}) }}">Atmesti duomenis</a>
                                             {% endif %}
                                         {% endblock %}
                                     {% endembed %}
@@ -60,7 +60,7 @@
                                     <div class="row">
                                         <div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel">
                                             {% for key, job_photo in job_photos %}
-                                                <div class="col-md-12">
+                                                <div class="col-md-12 mb-4">
                                                     <div class="bg-white rounded shadow-sm"><img src="{{ asset('upload/' ~ job_photo.photo) }}" alt="" class="img-fluid card-img-top" data-bs-toggle="modal" data-bs-target="#image-{{ job.id }}">
                                                         <div class="p-4">
                                                             <p class="text-muted mb-0">{{ job_photo.comment }}</p>
