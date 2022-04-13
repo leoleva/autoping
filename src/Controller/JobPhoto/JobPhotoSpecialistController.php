@@ -61,7 +61,7 @@ class JobPhotoSpecialistController extends AbstractController
 
         $this->addFlash('success_job_photo_edit', 'Informacija sėkmingai įkelta');
 
-        $this->jobPhotoCreator->createJobFromRequest($job, $request);
+        $this->jobPhotoCreator->createJobPhotoFromRequest($job, $request);
 
         return $this->redirectToRoute('edit_job_photos_view', ['id' => $job->getId()]);
     }

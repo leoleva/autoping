@@ -17,7 +17,7 @@
             <div class="row row-cols-1 row-cols-md-3 mb-3 ">
                 <div class="col-md-12 col-lg-12">
                     {% if app.session.flashbag.peek('job_update_successful') is not empty %}
-                        <div class="alert alert-success">
+                        <div class="alert alert-info">
                             {% for message in app.flashes('job_update_successful') %}
                                 <div class="mb-1">{{ message }}</div>
                             {% endfor %}

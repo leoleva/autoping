@@ -6,11 +6,12 @@ namespace App\Services;
 
 use App\Entity\Job;
 use App\Entity\JobOffer;
-use App\Entity\User as UserEntity;
+use App\Entity\User;
 use App\Enum\JobOfferStatus;
 use App\Enum\JobStatus;
 use App\Repository\JobRepository;
 use App\Repository\UserRepository;
+use App\Services\Job\JobUpdater;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Evp\Component\Money\Money;
@@ -21,14 +22,15 @@ class JobOfferCreator
         private JobRepository $jobRepository,
         private EntityManagerInterface $entityManager,
         private Mailer $mailer,
-        private UserRepository $userRepository
+        private UserRepository $userRepository,
+        private JobUpdater $jobUpdater
     ) {
     }
 
     public function createJobOffer(
         int $jobId,
-        UserEntity $user,
-        ?string $text,
+        User $user,
+        string $text,
         DateTime $createdAt,
         Money $price,
         JobOfferStatus $status,
@@ -44,7 +46,7 @@ class JobOfferCreator
         $jobOffer->setJobId($jobId);
 
         $jobOffer->setJob($this->entityManager->getReference(Job::class, $jobId));
-        $jobOffer->setUser($this->entityManager->getReference(UserEntity::class, $user->getId()));
+        $jobOffer->setUser($this->entityManager->getReference(User::class, $user->getId()));
 
         $job = $this->jobRepository->getById($jobId);
         $jobOwner = $this->userRepository->getUserById($job->getUserId());
@@ -52,9 +54,7 @@ class JobOfferCreator
         $this->mailer->offerCreated($jobOwner, $job);
 
         if ($job->getStatus() === JobStatus::New) {
-            $job->setStatus(JobStatus::Pending);
-
-            $this->entityManager->persist($job);
+            $this->jobUpdater->updateJobStatusToPending($job);
         }
 
         $this->entityManager->persist($jobOffer);

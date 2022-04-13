@@ -34,7 +34,7 @@
         <main>
             <div class="container">
                 {% if app.session.flashbag.peek('success_job_photo_edit') is not empty %}
-                    <div class="alert alert-success">
+                    <div class="alert alert-info">
                         {% for message in app.flashes('success_job_photo_edit') %}
                             <div class="mb-1">{{ message }}</div>
                         {% endfor %}

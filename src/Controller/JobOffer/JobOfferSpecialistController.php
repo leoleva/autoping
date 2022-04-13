@@ -8,6 +8,7 @@ use App\Controller\AbstractController;
 use App\Enum\JobOfferStatus;
 use App\Repository\JobOfferRepository;
 use App\Repository\JobRepository;
+use App\Services\JobOffer\JobOfferStatusHandler;
 use App\Services\JobOfferCreator;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,6 +24,7 @@ class JobOfferSpecialistController extends AbstractController
         private EntityManagerInterface $entityManager,
         private JobRepository $jobRepository,
         private JobOfferCreator $jobOfferCreator,
+        private JobOfferStatusHandler $jobOfferStatusHandler
     ) {
     }
 
@@ -51,8 +53,7 @@ class JobOfferSpecialistController extends AbstractController
             return $this->redirectToRoute('specialist_offers');
         }
 
-        $this->entityManager->remove($offer);
-        $this->entityManager->flush();
+        $this->jobOfferStatusHandler->closeJobOffer($offer);
 
         $this->addFlash('specialist_offer_success', 'Pasiūlymas pašalintas sėkmingai');
 

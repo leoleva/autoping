@@ -14,7 +14,7 @@
 
     {% include 'common/navbar.html.twig' %}
     <div class="container py-3">
-        <h1>Išsiųsto darbo pasiūlymai</h1>
+        <h1>Užsakymų pasiūlymai</h1>
         <hr>
 
         <main>
@@ -57,10 +57,11 @@
                                 <td>{{ offer.amount }} {{ offer.currency }}</td>
                                 <td>{{ offer.getLithuanianStatusNamingForOffer }}</td>
                                 <td>
-                                    {% if offer.status == 'accepted' %}
-                                        <a class="badge bg-info no-text-decoration" href="{{ url('edit_job_view', {id: offer.id}) }}">Įkelti informaciją</a>
-                                    {% endif %}
+                                    {% if offer.status.value == 'new' %}
                                     <a class="badge bg-danger no-text-decoration" href="{{ url('specialist_delete_offer', {id: offer.id}) }}">Pašalinti pasiūlymą</a>
+                                    {% else %}
+                                    -
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}

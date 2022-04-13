@@ -56,6 +56,15 @@ class JobOfferRepository extends ServiceEntityRepository
         return $result;
     }
 
+    /**
+     * @param int $jobId
+     * @return JobOffer[]
+     */
+    public function getOffersByJobId(int $jobId): array
+    {
+        return $this->findBy(['job_id' => $jobId]);
+    }
+
     // /**
     //  * @return JobOffer[] Returns an array of JobOffer objects
     //  */

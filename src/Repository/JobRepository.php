@@ -92,7 +92,7 @@ class JobRepository extends ServiceEntityRepository
      * @param int $userId
      * @return Job[]
      */
-    public function getSpecialistJobs(int $userId): array
+    public function getAssignedJobs(int $userId): array
     {
         $q = $this->createQueryBuilder('j')
             ->join('j.jobOffer', 'jo');
@@ -103,7 +103,29 @@ class JobRepository extends ServiceEntityRepository
                 $q->expr()->eq('jo.user_id', $userId),
         ))
             ->setParameter('status', JobOfferStatus::Accepted->value)
+            ->orderBy('j.id', 'desc')
             ->getQuery()->getResult();
+    }
+
+    /**
+     * @param int $userId
+     * @return Job[]
+     */
+    public function getBuyersJobs(int $userId): array
+    {
+        return $this->findBy(['user_id' => $userId]);
+    }
+
+    /**
+     * @return Job[]
+     */
+    public function getLast3Jobs(): array
+    {
+        $q = $this->createQueryBuilder('j')
+            ->orderBy('j.id', 'desc')
+            ->setMaxResults(3);
+
+        return $q->getQuery()->getResult();
     }
 
     // /**

@@ -11,13 +11,13 @@
     {% include 'common/navbar.html.twig' %}
     <div class="container py-3">
 
-        <h1>Palikti atsiliepimą</h1>
+        <h1>Redaguoti atsiliepimą</h1>
         <hr>
 
         <main>
             <div class="container">
                 {% if app.session.flashbag.peek('edit_review_success') is not empty %}
-                    <div class="alert alert-success">
+                    <div class="alert alert-info">
                         {% for message in app.flashes('edit_review_success') %}
                             <div class="mb-1">{{ message }}</div>
                         {% endfor %}

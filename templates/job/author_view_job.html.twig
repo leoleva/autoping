@@ -12,7 +12,7 @@
             <div class="container">
                 <div class="row">
                     {% if app.session.flashbag.peek('author_view_job_success') is not empty %}
-                        <div class="alert alert-success">
+                        <div class="alert alert-info">
                             {% for message in app.flashes('author_view_job_success') %}
                                 <div class="mb-1">{{ message }}</div>
                             {% endfor %}
@@ -111,6 +111,7 @@
                                             <thead>
                                             <tr>
                                                 <th scope="col">ID</th>
+                                                <th scope="col">Specialistas</th>
                                                 <th scope="col">Žinutė</th>
                                                 <th scope="col">Sukurtas</th>
                                                 <th scope="col">Kaina</th>
@@ -123,6 +124,7 @@
                                             {% for offer in job.jobOffer %}
                                                 <tr {% if offer.status.value == 'accepted' %}class="table-success-light"{% endif %}>
                                                     <th>{{ offer.id }}</th>
+                                                    <th><a class="text-decoration-none" href="{{ url('profile_by_id', {id: offer.user.id}) }}">{{ offer.user.email }}</a></th>
                                                     <td>{{ offer.text }}</td>
                                                     <td>{{ offer.createdAt.format('Y-m-d') }}</td>
                                                     <td>{{ offer.amount }} {{ offer.currency }}</td>

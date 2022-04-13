@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Skelbimų lenta{% endblock %}
 
 {% block javascript %}
 <script src="{{ asset('js/address_selection.js') }}"></script>
@@ -103,7 +103,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    {% if app.user.userType.value == 'specialist' %}
+                                    {% if app.user != null and app.user.userType.value == 'specialist' %}
                                         <hr>
                                         <div class="row">
                                             <div class="col-md-12  d-flex justify-content-center">

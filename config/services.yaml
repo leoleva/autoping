@@ -27,6 +27,10 @@ services:
         arguments:
             $targetDirectory: '%kernel.project_dir%/public/upload/'
 
+    App\Services\Mailer:
+        arguments:
+            $appHost: '%env(APP_HOST)%'
+
     App\Twig\JobExtension:
         tags:
             - twig.runtime

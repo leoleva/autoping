@@ -2,66 +2,18 @@
 
 {% block title %}Register{% endblock %}
 
-{% block css %}
-<style>
-    .no-text-decoration{
-        text-decoration: none;
-    }
-    .no-text-decoration:hover {
-        color: rgba(255, 255, 255, 0.42);
-    }
-    .table-success-light {
-        --bs-table-bg: #e0fdec;
-        --bs-table-striped-bg: #dfefe6;
-        --bs-table-striped-color: #000;
-        --bs-table-active-bg: #d9efe5;
-        --bs-table-active-color: #000;
-        --bs-table-hover-bg: #e2f3ec;
-        --bs-table-hover-color: #000;
-        color: #000;
-        border-color: #bcd0c7;
-    }
-    .table-warning-ligth {
-        --bs-table-bg: #ffab5a;
-        --bs-table-striped-bg: #ecb86d;
-        --bs-table-striped-color: #fff;
-        --bs-table-active-bg: #f4a62a;
-        --bs-table-active-color: #000;
-        --bs-table-hover-bg: #f1cf9a;
-        --bs-table-hover-color: #fff;
-        color: #fff;
-        border-color: #eece9d;
-    }
-</style>
-{% endblock %}
-
 {% block body %}
 
     {% include 'common/navbar.html.twig' %}
     <div class="container py-3">
         <h1>Mano skelbimai</h1>
+        <hr>
 
         <main>
             <div class="row row-cols-1 row-cols-md-3 mb-3 ">
                 <div class="col-md-12 col-lg-12">
-                    {% if app.session.flashbag.peek('job_deleted') is not empty %}
-                        <div class="alert alert-success">
-                            {% for message in app.flashes('job_deleted') %}
-                                <div class="mb-1">{{ message }}</div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-
-                    {% if app.session.flashbag.peek('offer_accepted') is not empty %}
-                        <div class="alert alert-success">
-                            {% for message in app.flashes('offer_accepted') %}
-                                <div class="mb-1">{{ message }}</div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-
                     {% if app.session.flashbag.peek('author_job_list_success') is not empty %}
-                        <div class="alert alert-success">
+                        <div class="alert alert-info">
                             {% for message in app.flashes('author_job_list_success') %}
                                 <div class="mb-1">{{ message }}</div>
                             {% endfor %}
@@ -83,7 +35,7 @@
                         <tbody>
 
                         {% for job in jobs %}
-                        <tr {% if job.status.value == 'waiting_for_review' %}class="table-warning-ligth"{% endif %}>
+                        <tr {% if job.status.value in ['waiting_for_review', 'waiting_for_payment'] %}class="table-warning-ligth"{% endif %}>
                             <th>{{ job.id }}</th>
                             <td>{{ job.title }}</td>
                             <td>{{ job.dueTo.format('Y-m-d') }}</td>
@@ -92,30 +44,8 @@
                             <td>{{ job.getLithuanianStatusNaming }}</td>
                             <td>
                                 <a class="badge bg-primary no-text-decoration" href="{{ url('author_view_job', {id: job.id}) }}">Peržiūrėti</a>
-
                             </td>
-                           {# <td>
-                                {% if job.jobPhotos.count > 0 %}
-                                    <a class="badge bg-success no-text-decoration" href="{{ url('review_job_photos', {id: job.id}) }}">Peržiūrėti duomenis</a>
-                                {% endif %}
-                                <a class="badge bg-primary no-text-decoration" href="{{ url('author_job_offer_list', {id: job.id}) }}">Peržiūrėti pasiūlymus</a>
-                                {% if job.status.value == 'new' or job.status.value == 'pending' %}
-                                    <a class="badge bg-info no-text-decoration" href="{{ url('edit_job_view', {id: job.id}) }}">Redaguoti</a>
-                                {% endif %}
-                                {% if job.status.value == 'waiting_for_payment' %}
-                                    <a class="badge bg-info no-text-decoration" href="{{ url('confirm_job_payment', {id: job.id}) }}">Patvirtinti mokėjimą</a>
-                                {% endif %}
-                                {% if job.status.value != 'done' %}
-                                    <a class="badge bg-danger no-text-decoration" href="{{ url('close_job', {id: job.id}) }}">Atšaukti</a>
-                                {% else %}
-                                    {% set review = get_user_review_by_user_id_and_job_id(app.user.id, job.id) %}
-                                    {% if review == null %}
-                                        <a class="badge bg-info no-text-decoration" href="{{ url('buyer_leaves_review_view', {id: job.id}) }}">Palikti atsliepimą</a>
-                                    {% else %}
-                                        <a class="badge bg-info no-text-decoration" href="{{ url('edit_user_review_view', {id: review.id}) }}">Redaguoti atsiliepimą</a>
-                                    {% endif %}
-                                {% endif %}
-                            </td>#}
+
                         </tr>
                         {% endfor %}
                         </tbody>

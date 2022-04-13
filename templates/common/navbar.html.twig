@@ -12,9 +12,6 @@
                         <ul class="navbar-nav me-auto">
                             <li class="nav-item">
                                 <a class="nav-link {% if app.request.get('_route') == 'job_list' %}active{% endif %}" href="{{ url('job_list') }}">Skelbimai
-{#
-                                    <span class="visually-hidden">(current)</span>
-#}
                                 </a>
                             </li>
                             {% if app.user is not null and app.user.userType.value == 'buyer' %}
@@ -26,23 +23,13 @@
                             </li>
                             {% else %}
                             <li class="nav-item">
-                                <a class="nav-link {% if app.request.get('_route') == 'specialist_job_list' %}active{% endif %}" href="{{ url('specialist_job_list') }}">Mano darbai</a>
+                                <a class="nav-link {% if app.request.get('_route') == 'specialist_job_list' %}active{% endif %}" href="{{ url('specialist_job_list') }}">Mano užsakymai</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% if app.request.get('_route') == 'specialist_offers' %}active{% endif %}" href="{{ url('specialist_offers') }}">Pasiūlymų užsakymai</a>
+                                <a class="nav-link {% if app.request.get('_route') == 'specialist_offers' %}active{% endif %}" href="{{ url('specialist_offers') }}">Mano užsakymų pasiūlymai</a>
                             </li>
                             {% endif %}
 
-{#                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#">Action</a>
-                                    <a class="dropdown-item" href="#">Another action</a>
-                                    <a class="dropdown-item" href="#">Something else here</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="#">Separated link</a>
-                                </div>
-                            </li>#}
                         </ul>
                         <ul class="navbar-nav d-flex">
                             {% if app.user == null %}

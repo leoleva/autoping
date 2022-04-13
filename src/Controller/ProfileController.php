@@ -15,6 +15,7 @@ use App\Repository\UserReviewRepository;
 use App\Services\UserUpdater;
 use App\Validator\UserRequestValidator;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -88,7 +89,8 @@ class ProfileController extends AbstractController
                 $request->get('password'),
                 $request->request->get('account'),
                 $request->request->get('name'),
-                $newAddress
+                $newAddress,
+
             );
 
             $this->addFlash('my_profile_update_view_success', 'Profilis sėkmingai atnaujintas');
@@ -105,10 +107,10 @@ class ProfileController extends AbstractController
         $user = $this->userRepository->getUserById($id);
 
         /** @var UserReview[] $reviews */
-        $reviews = $this->userReviewRepository->findBy(['user_id' => $user->getId()]);
+        $reviews = $this->userReviewRepository->getByUserId($id);
 
         /** @var ArrayCollection|UserReview[] $collection */
-        $collection = new \Doctrine\Common\Collections\ArrayCollection($reviews);
+        $collection = new ArrayCollection($reviews);
 
         $total5 = $collection->filter(function (UserReview $review) {return $review->getRating() === 5;})->count();
         $total4 = $collection->filter(function (UserReview $review) {return $review->getRating() === 4;})->count();
@@ -116,13 +118,7 @@ class ProfileController extends AbstractController
         $total2 = $collection->filter(function (UserReview $review) {return $review->getRating() === 2;})->count();
         $total1 = $collection->filter(function (UserReview $review) {return $review->getRating() === 1;})->count();
 
-        $totalSum = 0;
-
-        foreach ($collection as $element) {
-            $totalSum +=  $element->getRating();
-        }
-
-        $totalRating = $collection->count() !== 0 ?  $totalSum / $collection->count() : null;
+        $totalRating = $this->getTotalRating($collection);
 
         $class = null;
 
@@ -167,5 +163,20 @@ class ProfileController extends AbstractController
             'total_rating' => round($totalRating, 1),
             'total_class' => $class,
         ]);
+    }
+
+    /**
+     * @param Collection|UserReview[] $collection
+     * @return int
+     */
+    private function getTotalRating(Collection $collection): int
+    {
+        $totalSum = 0;
+
+        foreach ($collection as $element) {
+            $totalSum +=  $element->getRating();
+        }
+
+        return $collection->count() !== 0 ?  $totalSum / $collection->count() : 0;
     }
 }

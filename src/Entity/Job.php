@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Enum\JobStatus;
 use App\Repository\JobRepository;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -26,13 +27,13 @@ class Job
     private string $text;
 
     #[ORM\Column(type: 'datetime')]
-    private \DateTimeInterface $dueTo;
+    private DateTimeInterface $dueTo;
 
     #[ORM\Column(type: 'datetime')]
-    private \DateTimeInterface $created_at;
+    private DateTimeInterface $created_at;
 
     #[ORM\Column(type: 'datetime')]
-    private \DateTimeInterface $updated_at;
+    private DateTimeInterface $updated_at;
 
     #[ORM\Column(type: 'string', length: 255)]
     private string $amount;
@@ -109,36 +110,36 @@ class Job
         return $this;
     }
 
-    public function getDueTo(): \DateTimeInterface
+    public function getDueTo(): DateTimeInterface
     {
         return $this->dueTo;
     }
 
-    public function setDueTo(\DateTimeInterface $dueTo): self
+    public function setDueTo(DateTimeInterface $dueTo): self
     {
         $this->dueTo = $dueTo;
 
         return $this;
     }
 
-    public function getCreatedAt(): \DateTimeInterface
+    public function getCreatedAt(): DateTimeInterface
     {
         return $this->created_at;
     }
 
-    public function setCreatedAt(\DateTimeInterface $created_at): self
+    public function setCreatedAt(DateTimeInterface $created_at): self
     {
         $this->created_at = $created_at;
 
         return $this;
     }
 
-    public function getUpdatedAt(): \DateTimeInterface
+    public function getUpdatedAt(): DateTimeInterface
     {
         return $this->updated_at;
     }
 
-    public function setUpdatedAt(\DateTimeInterface $updated_at): self
+    public function setUpdatedAt(DateTimeInterface $updated_at): self
     {
         $this->updated_at = $updated_at;
 

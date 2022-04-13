@@ -11,7 +11,6 @@ use App\Repository\JobRepository;
 use App\Repository\UserReviewRepository;
 use App\Services\UserReview\UserReviewHandler;
 use DateTime;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -19,7 +18,6 @@ class UserReviewController extends AbstractController
 {
     public function __construct(
         private JobRepository $jobRepository,
-        private EntityManagerInterface $entityManager,
         private UserReviewRepository $userReviewRepository,
         private UserReviewHandler $userReviewHandler
     ) {
@@ -69,6 +67,7 @@ class UserReviewController extends AbstractController
 
         return $this->render('user-review/add_review.html.twig', [
             'job' => $job,
+            'user' => $job->getUser(),
         ]);
     }
 
@@ -88,7 +87,7 @@ class UserReviewController extends AbstractController
             return $this->redirectToRoute('author_job_list');
         }
 
-        if ($job->getUserId() !== $this->getUser()->getId() && $acceptedOffer->getUserId() !== $this->getUser()->getId()) {
+        if (!($job->getUserId() !== $this->getUser()->getId()) && !($acceptedOffer->getUserId() !== $this->getUser()->getId())) {
             return $this->redirectToRoute('specialist_job_list');
         }
 
@@ -120,11 +119,11 @@ class UserReviewController extends AbstractController
         $acceptedOffer = $job->getJobOffer()->filter(fn(JobOffer $jobOffer) => $jobOffer->getStatus() === JobOfferStatus::Accepted)->first();
 
         if (!$acceptedOffer instanceof JobOffer) {
-            return $this->redirectToRoute('specialist_job_list');
+            return $this->redirectToRoute($this->getUser()->getUserType() === UserType::Specialist ? 'specialist_job_list' : 'author_job_list');
         }
 
-        if ($job->getUserId() !== $this->getUser()->getId() || $acceptedOffer->getUserId() !== $this->getUser()->getId()) {
-            return $this->redirectToRoute('job_list');
+        if (!($job->getUserId() !== $this->getUser()->getId()) && !($acceptedOffer->getUserId() !== $this->getUser()->getId())) {
+            return $this->redirectToRoute($this->getUser()->getUserType() === UserType::Specialist ? 'specialist_job_list' : 'author_job_list');
         }
 
         return $this->render('user-review/edit_review.html.twig', [
@@ -183,7 +182,7 @@ class UserReviewController extends AbstractController
             return $this->redirectToRoute('specialist_job_list');
         }
 
-        if ($job->getUserId() !== $this->getUser()->getId() || $acceptedOffer->getUserId() !== $this->getUser()->getId()) {
+        if (!($job->getUserId() !== $this->getUser()->getId()) && !($acceptedOffer->getUserId() !== $this->getUser()->getId())) {
             return $this->redirectToRoute('job_list');
         }
 

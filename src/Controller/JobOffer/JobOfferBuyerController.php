@@ -8,6 +8,8 @@ use App\Controller\AbstractController;
 use App\Enum\JobOfferStatus;
 use App\Repository\JobOfferRepository;
 use App\Services\JobOffer\AcceptJobOfferHandler;
+use App\Services\JobOffer\JobOfferStatusHandler;
+use App\Services\Mailer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,8 +18,9 @@ class JobOfferBuyerController extends AbstractController
 {
     public function __construct(
         private JobOfferRepository $jobOfferRepository,
-        private EntityManagerInterface $entityManager,
-        private AcceptJobOfferHandler $acceptJobOfferHandler
+        private AcceptJobOfferHandler $acceptJobOfferHandler,
+        private Mailer $mailer,
+        private JobOfferStatusHandler $jobOfferStatusHandler,
     ) {
     }
 
@@ -34,9 +37,9 @@ class JobOfferBuyerController extends AbstractController
             return $this->redirectToRoute('author_job_list');
         }
 
-        $offer->setStatus(JobOfferStatus::Declined);
-        $this->entityManager->persist($offer);
-        $this->entityManager->flush();
+        $this->jobOfferStatusHandler->declineJobOffer($offer);
+
+        $this->mailer->offerDeclined($offer->getUser(), $offer->getJob());
 
         $this->addFlash('author_view_job_offer_success', 'Pasiūlymas atmestas sėkmingai');
 
@@ -56,7 +59,7 @@ class JobOfferBuyerController extends AbstractController
             return $this->redirectToRoute('author_job_list');
         }
 
-        $this->acceptJobOfferHandler->accept($offer);
+        $this->acceptJobOfferHandler->acceptJobOffer($offer);
 
         $this->addFlash('author_view_job_success', 'Pasiūlymas sėkmingai priimtas');
 

@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Services\Job;
 
 use App\Entity\Address;
+use App\Entity\Job;
 use App\Enum\JobStatus;
 use App\Repository\AddressRepository;
 use App\Repository\JobRepository;
+use App\Services\Mailer;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Evp\Component\Money\Money;
@@ -52,6 +54,30 @@ class JobUpdater
         $job = $this->jobRepository->getById($jobId);
 
         $job->setStatus($status);
+
+        $this->entityManager->persist($job);
+        $this->entityManager->flush();
+    }
+
+    public function updateJobStatusToClosed(Job $job): void
+    {
+        $job->setStatus(JobStatus::Closed);
+
+        $this->entityManager->persist($job);
+        $this->entityManager->flush();
+    }
+
+    public function updateJobStatusToPending(Job $job): void
+    {
+        $job->setStatus(JobStatus::Pending);
+
+        $this->entityManager->persist($job);
+        $this->entityManager->flush();
+    }
+
+    public function updateJobStatusToDone(Job $job): void
+    {
+        $job->setStatus(JobStatus::Done);
 
         $this->entityManager->persist($job);
         $this->entityManager->flush();

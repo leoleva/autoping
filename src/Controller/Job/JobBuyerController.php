@@ -94,7 +94,7 @@ class JobBuyerController extends AbstractController
         }
 
         return $this->render('job/author_job_list.html.twig', [
-            'jobs' => $this->jobRepository->findBy(['user_id' => $this->getUser()->getId()])
+            'jobs' => $this->jobRepository->getBuyersJobs($this->getUser()->getId()),
         ]);
     }
 
@@ -198,7 +198,7 @@ class JobBuyerController extends AbstractController
             return $this->redirectToRoute('author_job_list');
         }
 
-        $this->jobUpdater->updateJobStatus($job->getId(), JobStatus::Closed);
+        $this->jobUpdater->updateJobStatusToClosed($job);
 
         $this->addFlash('author_view_job_success', 'Skelbimas uždarytas sėkmingai');
 
@@ -259,7 +259,7 @@ class JobBuyerController extends AbstractController
             return $this->redirectToRoute('author_job_list');
         }
 
-        $this->jobUpdater->updateJobStatus($job->getId(), JobStatus::Done);
+        $this->jobUpdater->updateJobStatusToDone($job);
 
         $this->addFlash('author_view_job_success', 'Darbas sėkmingai pabaigtas');
 

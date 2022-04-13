@@ -1,5 +1,5 @@
 <div class="card border mb-12 mb-3">
-    <div class="card-header">Skelbimas</div>
+    <div class="card-header"><a class="text-decoration-none" href="{{ url('view_job', {id: job.id}) }}">Skelbimas #{{ job.id }}</a></div>
     <div class="card-body">
         <div class="pb-2">
             <b><i class="bi bi-info-lg"></i> ID:</b> {{ job.id }}

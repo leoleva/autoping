@@ -9,18 +9,18 @@ td .no-text-decoration:hover {
 }
 
 .table-success-light {
-    --bs-table-bg: #e0fdec;
-    --bs-table-striped-bg: #dfefe6;
-    --bs-table-striped-color: #000;
-    --bs-table-active-bg: #d9efe5;
-    --bs-table-active-color: #000;
-    --bs-table-hover-bg: #e2f3ec;
-    --bs-table-hover-color: #000;
-    color: #000;
-    border-color: #bcd0c7;
+    --bs-table-bg: #95eccb;
+    --bs-table-striped-bg: #86eac1;
+    --bs-table-striped-color: #fff;
+    --bs-table-active-bg: #84d3b4;
+    --bs-table-active-color: #fff;
+    --bs-table-hover-bg: #97f9d1;
+    --bs-table-hover-color: #fff;
+    color: #fff;
+    border-color: #98d7be;
 }
 .table-warning-ligth {
-    --bs-table-bg: #ffd599;
+    --bs-table-bg: #ffc87a;
     --bs-table-striped-bg: #ecb86d;
     --bs-table-striped-color: #fff;
     --bs-table-active-bg: #f4a62a;

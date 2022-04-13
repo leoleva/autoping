@@ -20,7 +20,7 @@ class JobPhotoCreator
 
     }
 
-    public function createJobFromRequest(Job $job, Request $request): void
+    public function createJobPhotoFromRequest(Job $job, Request $request): void
     {
         /** @var UploadedFile[] $files */
         $files = $request->files->all('file');

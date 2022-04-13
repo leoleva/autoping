@@ -58,6 +58,14 @@ class UserReviewRepository extends ServiceEntityRepository
         return $review;
     }
 
+    /**
+     * @return UserReview[]
+     */
+    public function getByUserId(int $id): array
+    {
+        return $this->findBy(['user_id' => $id]);
+    }
+
 
     // /**
     //  * @return UserReview[] Returns an array of UserReview objects

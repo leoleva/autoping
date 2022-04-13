@@ -54,20 +54,6 @@ class JobController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/job/specialist/list', name: 'specialist_job_list')]
-    public function specialistJobList(): Response
-    {
-        if ($this->getUser() === null) {
-            return $this->redirectToRoute('app_login');
-        }
-
-        $jobs = $this->jobRepository->getSpecialistJobs($this->getUser()->getId());
-
-        return $this->render('job/specialist_job_list.html.twig', [
-            'jobs' => $jobs,
-        ]);
-    }
-
     #[Route(path: '/job/view/{id}', name: 'view_job')]
     public function viewJob(int $id): Response
     {
