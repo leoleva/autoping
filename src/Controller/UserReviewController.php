@@ -150,7 +150,7 @@ class UserReviewController extends AbstractController
             return $this->redirectToRoute('specialist_job_list');
         }
 
-        if ($job->getUserId() !== $this->getUser()->getId() || $acceptedOffer->getUserId() !== $this->getUser()->getId()) {
+        if (!($job->getUserId() !== $this->getUser()->getId()) && !($acceptedOffer->getUserId() !== $this->getUser()->getId())) {
             return $this->redirectToRoute('job_list');
         }
 
