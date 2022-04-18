@@ -13,4 +13,6 @@
 /.idea
 .idea/
 
-/public/upload/
+/public/upload/*
+!/public/upload/.gitkeep
+

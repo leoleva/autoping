@@ -13,17 +13,15 @@ class LoginController extends AbstractController
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
          if ($this->getUser()) {
-            return $this->redirectToRoute('my_profile_update_view');
+             $this->addFlash('my_profile_update_view_success', 'Sėkmingai prisijungta');
+
+             return $this->redirectToRoute('my_profile_update_view');
          }
 
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
-
-        if ($error === null) {
-            $this->addFlash('my_profile_update_view_success', 'Sėkmingai prisijungta');
-        }
 
         return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
     }
