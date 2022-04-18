@@ -80,7 +80,7 @@ class Mailer
         $email = (new TemplatedEmail())
             ->from(new Address('admin@autoping.lt', 'AutoPing.lt'))
             ->to($user->getEmail())
-            ->subject('Gautas naujas pasiūlymas')
+            ->subject('Duomenys paruošti peržiūrai')
             ->htmlTemplate('email/mail-template.html.twig')
             ->context([
                 'email_title' => 'Duomenys paruošti peržiūrai',

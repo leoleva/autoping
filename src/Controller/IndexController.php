@@ -29,14 +29,6 @@ class IndexController extends AbstractController
             }
         }
 
-/*        return $this->render('email/mail-template.html.twig', [
-            'email_title' => 'Gautas naujas pasiūlymas',
-            'email_text' => 'Jūsų darbui buvo pateiktas naujas pasiūlymas',
-            'button' => true,
-            'button_text' => 'Peržiūrėti pasiūlymus',
-            'button_url' =>  'aaa',
-        ]);*/
-
         return $this->render('index/index.html.twig', [
             'jobs' => $jobs,
             'max_amount' => $maxAmount,
