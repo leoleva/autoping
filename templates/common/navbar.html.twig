@@ -21,7 +21,7 @@
                             <li class="nav-item">
                                 <a class="nav-link {% if app.request.get('_route') == 'add_job_view' %}active{% endif %}" href="{{ url('add_job_view') }}">Įdėti skelbimą</a>
                             </li>
-                            {% else %}
+                            {% elseif app.user is not null and app.user.userType.value == 'specialist' %}
                             <li class="nav-item">
                                 <a class="nav-link {% if app.request.get('_route') == 'specialist_job_list' %}active{% endif %}" href="{{ url('specialist_job_list') }}">Mano užsakymai</a>
                             </li>
