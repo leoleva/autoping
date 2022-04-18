@@ -129,7 +129,7 @@ class UserReviewController extends AbstractController
         return $this->render('user-review/edit_review.html.twig', [
             'job' => $job,
             'user_review' => $userReview,
-            'user' => $this->getUser()->getUserType() === UserType::Buyer ? $acceptedOffer->getUser() : $job->getUser(),
+            'user' => $userReview->getUser(),
         ]);
     }
 
