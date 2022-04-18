@@ -41,7 +41,7 @@ class JobExtension extends AbstractExtension
 
     public function get_count_of_executed_jobs(int $userId): int
     {
-        return count($this->jobRepository->getSpecialistJobs($userId));
+        return count($this->jobRepository->getAssignedJobs($userId));
     }
 
     public function time_elapsed_string($datetime, $full = false)
