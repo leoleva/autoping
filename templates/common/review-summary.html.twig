@@ -2,7 +2,7 @@
     <div class="card-header">Santrauka</div>
     <div class="card-body">
         <div class="pb-2">
-            <b><i class="bi bi-person"></i> Vartotojas:</b> <a href="{{ url('profile_by_id', {id: user.id}) }}" class="text-decoration-none">{{ job.user.email }}</a>
+            <b><i class="bi bi-person"></i> Vartotojas:</b> <a href="{{ url('profile_by_id', {id: user.id}) }}" class="text-decoration-none">{{ user.email }}</a>
         </div>
         <div class="pb-2">
             <b><i class="bi bi-card-text"></i> Skelbimas:</b> <a href="{{ url('view_job', {id: job.id}) }}" class="text-decoration-none">{{ job.title }}</a>
