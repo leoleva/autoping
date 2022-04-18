@@ -31,7 +31,7 @@ class JobExtension extends AbstractExtension
 
     public function getUserReviewByUserIdAndJobId(int $userId, int $jobId): ?UserReview
     {
-        return $this->userReviewRepository->findOneBy(['user_id' => $userId, 'jobId' => $jobId]);
+        return $this->userReviewRepository->findOneBy(['reviewer_id' => $userId, 'jobId' => $jobId]);
     }
 
     public function get_count_of_created_jobs(int $userId): int
