@@ -167,9 +167,9 @@ class ProfileController extends AbstractController
 
     /**
      * @param Collection|UserReview[] $collection
-     * @return int
+     * @return float
      */
-    private function getTotalRating(Collection $collection): int
+    private function getTotalRating(Collection $collection): float
     {
         $totalSum = 0;
 
