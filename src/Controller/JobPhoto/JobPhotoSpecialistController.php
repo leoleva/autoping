@@ -112,7 +112,11 @@ class JobPhotoSpecialistController extends AbstractController
             return $this->json('', 400);
         }
 
-        $this->jobPhotoRemover->removeByIdAndUser($id, $this->getUser());
+        try {
+            $this->jobPhotoRemover->removeByIdAndUser($id, $this->getUser());
+        } catch (\GeneralException $generalException) {
+            return $this->json([$generalException->getMessage()], 400);
+        }
 
         return $this->json(['ok'], 200);
     }

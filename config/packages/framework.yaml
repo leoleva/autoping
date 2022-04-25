@@ -22,6 +22,5 @@ when@test:
         test: true
         session:
             storage_factory_id: session.storage.factory.mock_file
-
-    mailer:
-        dsn: '%env(MAILER_DSN)%'
+        mailer:
+            dsn: '%env(MAILER_DSN)%'

@@ -19,7 +19,7 @@ class JobExtension extends AbstractExtension
     ) {
     }
 
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('get_user_review_by_user_id_and_job_id', [$this, 'getUserReviewByUserIdAndJobId']),
