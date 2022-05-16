@@ -15,12 +15,10 @@
                     </div>
                     <div class="col-md-9 col-lg-9">
                         <div class="card border">
-                            {% if app.session.flashbag.peek('send_job_offer_danger') is not empty %}
+                            {% if app.session.flashbag.peek('specialist_offer_success') is not empty %}
                                 <div class="alert alert-danger">
-                                    {% for messages in app.flashes('send_job_offer_danger') %}
-                                        {% for message in messages %}
-                                            <div class="mb-1">{{ message }}</div>
-                                        {% endfor %}
+                                    {% for message in app.flashes('specialist_offer_success') %}
+                                        <div class="mb-1">{{ message }}</div>
                                     {% endfor %}
                                 </div>
                             {% endif %}
