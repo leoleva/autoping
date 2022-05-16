@@ -15,6 +15,16 @@
                     </div>
                     <div class="col-md-9 col-lg-9">
                         <div class="card border">
+                            {% if app.session.flashbag.peek('send_job_offer_danger') is not empty %}
+                                <div class="alert alert-danger">
+                                    {% for messages in app.flashes('send_job_offer_danger') %}
+                                        {% for message in messages %}
+                                            <div class="mb-1">{{ message }}</div>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
                             <div class="card-header">Pasiūlymo forma</div>
                             <div class="card-body">
                                 <form class="needs-validation" method="POST" action="{{ url('send_offer_handle', {id: job.id}) }}">

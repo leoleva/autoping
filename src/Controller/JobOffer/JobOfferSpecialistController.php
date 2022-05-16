@@ -84,6 +84,12 @@ class JobOfferSpecialistController extends AbstractController
 
         $job = $this->jobRepository->getById($id);
 
+        if ($request->request->getInt('amount') <= 0) {
+            $this->addFlash('send_job_offer_danger', 'Pasiūlymo suma negali būti neigiama');
+
+            return $this->redirectToRoute('send_offer_view', ['id' => $id]);
+        }
+
         $this->jobOfferCreator->createJobOffer(
             $id,
             $this->getUser(),
