@@ -84,7 +84,7 @@ class JobRepository extends ServiceEntityRepository
             $query->expr()->in('j.status', [JobStatus::New->value, JobStatus::Pending->value])
         );
 
-        $query->orderBy('id', 'desc');
+        $query->orderBy('j.id', 'desc');
 
         return $query->getQuery()->getResult();
     }
