@@ -84,6 +84,8 @@ class JobRepository extends ServiceEntityRepository
             $query->expr()->in('j.status', [JobStatus::New->value, JobStatus::Pending->value])
         );
 
+        $query->orderBy('id', 'desc');
+
         return $query->getQuery()->getResult();
     }
 
@@ -112,7 +114,7 @@ class JobRepository extends ServiceEntityRepository
      */
     public function getBuyersJobs(int $userId): array
     {
-        return $this->findBy(['user_id' => $userId]);
+        return $this->findBy(['user_id' => $userId], ['id' => 'desc']);
     }
 
     /**
